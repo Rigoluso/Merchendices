@@ -88,7 +88,9 @@ test("the split-signal dice logo is used throughout the brand", () => {
   const logoUrl = new URL("../site/logo.svg", import.meta.url);
 
   assert.equal(existsSync(logoUrl), true);
-  assert.equal((html.match(/src=["']logo\.svg["']/g) ?? []).length, 2);
+  assert.equal((html.match(/src=["']logo\.svg["']/g) ?? []).length, 9);
+  assert.match(html, /rel=["']icon["'][^>]+href=["']logo\.svg["']/);
+  assert.doesNotMatch(html, /favicon\.svg/);
 
   const logo = readFileSync(logoUrl, "utf8");
   assert.match(logo, /scanline/i);

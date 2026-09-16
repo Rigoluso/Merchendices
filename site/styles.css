@@ -89,8 +89,17 @@ h2 { margin-bottom: 0; font-size: clamp(3.8rem, 8vw, 8.4rem); line-height: .82; 
 .work-card { margin: 0; padding: .75rem; border: 1px solid #3a3431; border-radius: var(--radius); background: #1b1816; } .work-card-wide { grid-row: span 2; } .work-card-square { grid-column: 2; }
 .work-media { position: relative; display: grid; place-items: center; min-height: 24rem; overflow: hidden; border-radius: calc(var(--radius) - .5rem); background-color: #28221f; background-image: repeating-linear-gradient(135deg, transparent 0 20px, rgba(255,255,255,.025) 20px 21px); }
 .work-card-wide .work-media { min-height: 50rem; } .work-media:not(:has(img))::before { content: ""; width: 55%; aspect-ratio: 1; border: 1px solid currentColor; border-radius: 50%; opacity: .2; box-shadow: 0 0 0 4rem rgba(255,255,255,.02); }
-.work-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.2,.7,.2,1), filter .4s ease; }
-.work-card:hover .work-media img { transform: scale(1.035); filter: saturate(1.08); }
+.work-media > img:first-child { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.2,.7,.2,1), filter .4s ease; }
+.work-card:hover .work-media > img:first-child { transform: scale(1.035); filter: saturate(1.08); }
+.applied-logo { position: absolute; z-index: 2; width: auto; height: auto; object-fit: contain; filter: drop-shadow(0 .35rem .45rem rgba(0,0,0,.35)); }
+.apparel-mark { left: 43%; top: 30%; width: 19%; transform: rotate(1deg); }
+.pack-mark { width: 8%; }
+.pack-mark-one { left: 27%; top: 53%; transform: rotate(-2deg); }
+.pack-mark-two { left: 64%; top: 49%; transform: rotate(1deg); }
+.pack-mark-three { left: 75%; top: 25%; transform: rotate(-1deg); }
+.system-mark-one { left: 24%; top: 28%; width: 12%; transform: rotate(-2deg); }
+.system-mark-two { left: 66%; top: 23%; width: 10%; transform: rotate(1deg); }
+.system-mark-three { left: 73%; top: 69%; width: 7%; transform: rotate(-4deg); }
 .work-media span { position: absolute; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: #75645c; }
 .work-media-one { color: var(--green); } .work-media-two { color: var(--violet); } .work-media-three { color: var(--cyan); }
 .work-card figcaption { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding: 1.2rem .4rem .5rem; }
@@ -142,6 +151,7 @@ h2 { margin-bottom: 0; font-size: clamp(3.8rem, 8vw, 8.4rem); line-height: .82; 
   h2 { font-size: clamp(3.5rem, 18vw, 5.2rem); } .service-grid { grid-template-columns: 1fr; } .service-card { grid-column: auto; min-height: 25rem; } .service-card:nth-child(even) { margin-top: 0; }
   .ticker { margin-bottom: -5rem; } .process-visual { min-height: 24rem; } .process-symbol { font-size: 8rem; } .work-head > p:last-child { grid-column: auto; }
   .work-card-wide .work-media, .work-media { min-height: 26rem; } .work-card figcaption { align-items: start; flex-direction: column; } .model-card { min-height: 30rem; }
+  .apparel-mark { width: 22%; }
   .zero-fee { grid-template-columns: auto 1fr; } .asterisk { display: none; } .closing-bands { grid-template-columns: repeat(2, 1fr); } .closing-stamp { width: 78vw; } .site-footer { align-items: start; flex-direction: column; }
 }
 @media (prefers-reduced-motion: reduce) {
