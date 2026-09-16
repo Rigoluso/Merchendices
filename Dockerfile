@@ -1,4 +1,4 @@
-FROM nginx:1.27-alpine
+FROM docker.io/library/nginx:1.27-alpine
 
 RUN rm -f /etc/nginx/conf.d/default.conf \
     && chown -R nginx:nginx /usr/share/nginx/html /var/cache/nginx /var/run
