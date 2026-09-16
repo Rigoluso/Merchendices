@@ -4,7 +4,7 @@
 
 **Goal:** Build a complete animated MERX landing page that is served as static files by a production Nginx Docker image.
 
-**Architecture:** A dependency-free single-page site lives in `site/` and uses semantic HTML, a focused stylesheet, and progressive-enhancement JavaScript. Generated merchandise campaign images are local assets. The root Dockerfile packages the static directory into an unprivileged Nginx runtime with a dedicated configuration for compression, caching, and SPA-safe routing.
+**Architecture:** A dependency-free single-page site lives in `site/` and uses semantic HTML, a focused stylesheet, progressive-enhancement JavaScript, and a canonical SVG brand mark. The root Dockerfile packages the static directory into an unprivileged Nginx runtime with a dedicated configuration for compression, caching, and SPA-safe routing.
 
 **Tech Stack:** HTML5, CSS, vanilla JavaScript, Node.js built-in test runner, Docker, Nginx 1.27 Alpine
 
@@ -14,7 +14,7 @@
 
 - Keep the implementation to one static marketing route with no database, authentication, external service, or persistent client state.
 - The first viewport uses only black, graphite, grey, and white; electric green, violet, orange, and cyan enter in distinct stages further down.
-- Include exactly three coherent, locally stored merchandise example images with no third-party trademarks or baked-in text.
+- Include exactly three coherent code-native capability panels with no fictional product photography or client claims.
 - Use discrete scroll events, masks, stacking, and panel entrances; do not implement the page progression as one continuous background gradient.
 - Preserve complete content and navigation when JavaScript or animation is unavailable.
 - Implement `prefers-reduced-motion`, keyboard focus states, responsive layouts, useful alternative text, metadata, and a site-specific favicon.
@@ -123,7 +123,7 @@ Expected: FAIL on missing service/process copy and composed class names.
 
 - [ ] **Step 3: Implement the page content**
 
-Build the hero around `Your channel. Your world. Your merch.` and a concise explanation of the free setup model. Add four service cards, four process stages, three image figure shells, the responsibility split, closing invitation, and minimal footer. Keep examples explicitly conceptual, with labels such as `Night Shift Hoodie`, `Signal Cap`, and `Studio Pack`, not purported client work.
+Build the hero around `Your channel. Your world. Your merch.` and a concise explanation of the free setup model. Add four service cards, four process stages, three graphic capability panels, the responsibility split, closing invitation, and minimal footer. Keep examples focused on identity, digital experience, and operations rather than specific products or purported client work.
 
 - [ ] **Step 4: Implement the visual system**
 
@@ -207,28 +207,24 @@ git add tests/site.test.mjs site/index.html site/styles.css site/script.js
 git commit -m "feat: add accessible staged motion"
 ```
 
-### Task 4: Generate and integrate the merchandise imagery
+### Task 4: Build the MERX identity and capability system
 
 **Files:**
-- Create: `site/assets/night-shift.webp`
-- Create: `site/assets/fulfillment.webp`
-- Create: `site/assets/studio-pack.webp`
+- Create: `site/logo.svg`
 - Modify: `tests/site.test.mjs`
 - Modify: `site/index.html`
 - Modify: `site/styles.css`
 
 **Interfaces:**
-- Consumes: the three figure shells in `#work`.
-- Produces: three local `1600×1200` WebP editorial campaign assets referenced by relative URLs.
+- Consumes: the three figure shells in `#work` and existing MERX color tokens.
+- Produces: one canonical dimensional die SVG and three code-native capability panels.
 
-- [ ] **Step 1: Add a failing local-image contract test**
+- [ ] **Step 1: Add failing identity and no-photography contract tests**
 
 ```js
-import { existsSync } from "node:fs";
-
-test("all three merchandise campaign images are local and present", () => {
+test("generated merchandise photographs are removed", () => {
   for (const name of ["night-shift.webp", "fulfillment.webp", "studio-pack.webp"]) {
-    assert.equal(existsSync(new URL(`../site/assets/${name}`, import.meta.url)), true, name);
+    assert.equal(existsSync(new URL(`../site/assets/${name}`, import.meta.url)), false, name);
   }
 });
 ```
@@ -237,19 +233,19 @@ test("all three merchandise campaign images are local and present", () => {
 
 Run: `node --test tests/site.test.mjs`
 
-Expected: FAIL listing the three missing image files.
+Expected: FAIL while the old photo assets and flat logo still exist.
 
-- [ ] **Step 3: Generate one coherent image set**
+- [ ] **Step 3: Create the dimensional MERX die**
 
-Use a single image-generation request for three separate `4:3` editorial product photographs: a black heavyweight creator hoodie on a chrome studio chair with green rim light; folded apparel and recyclable shipping packaging on a violet/orange fulfillment table; and a coordinated hoodie, cap, and tee collection on a cyan-lit modular set. Require photoreal materials, premium campaign lighting, no people, no readable text, no logos, and consistent art direction.
+Construct an isometric three-face die in `site/logo.svg`. Use CRT scanlines on the monochrome faces and green, violet, orange, and cyan facets on the color faces. Form a subtle `M` and `X` from negative-space seams without using an SVG text element.
 
-- [ ] **Step 4: Inspect and save the generated assets**
+- [ ] **Step 4: Replace photography with graphic capability panels**
 
-Confirm that each image is merchandise-focused, contains no visible brand mark or malformed text, and shares the same lighting language. Save the selected files with the exact filenames in the interface block.
+Delete the three generated WebP assets. Rebuild the work section as identity-system, digital-experience, and launch-operations panels using only HTML, CSS, and the canonical SVG logo.
 
-- [ ] **Step 5: Integrate responsive image markup**
+- [ ] **Step 5: Verify reuse and responsive behavior**
 
-Use explicit `width="1600" height="1200"`, descriptive alt text, `loading="lazy"` for below-fold images, and `object-fit: cover`. Do not apply image text overlays that reduce product visibility.
+Reuse `logo.svg` in the header, footer, favicon, and every capability panel. Confirm the hidden letterforms remain subtle at header size and the capability panels stack without overflow on mobile.
 
 - [ ] **Step 6: Run the tests**
 
@@ -257,11 +253,11 @@ Run: `node --test tests/site.test.mjs`
 
 Expected: PASS.
 
-- [ ] **Step 7: Commit imagery**
+- [ ] **Step 7: Commit the identity system**
 
 ```bash
-git add site/assets site/index.html site/styles.css tests/site.test.mjs
-git commit -m "feat: add MERX campaign imagery"
+git add -A
+git commit -m "feat: refine MERX identity system"
 ```
 
 ### Task 5: Package the site for Docker and Nginx
@@ -371,4 +367,4 @@ Expected: no whitespace errors; only intended uncommitted verification fixes, if
 
 Run: `git log --oneline -6`
 
-Expected: design, shell, narrative, motion, imagery, and container-delivery commits are present.
+Expected: design, shell, narrative, motion, identity-system, and container-delivery commits are present.

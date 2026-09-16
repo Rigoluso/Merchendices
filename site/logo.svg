@@ -1,27 +1,49 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
-  <title id="title">MERX split-signal dice mark</title>
-  <desc id="desc">A rounded die split diagonally between monochrome television scanlines and four vivid color bands.</desc>
+  <title id="title">MERX split-signal die</title>
+  <desc id="desc">An isometric die split between monochrome television scanlines and vivid color facets, with a subtle M and X formed by its seams.</desc>
   <defs>
-    <clipPath id="die-clip"><rect x="4" y="4" width="56" height="56" rx="14"/></clipPath>
-    <pattern id="scanline-pattern" width="4" height="4" patternUnits="userSpaceOnUse">
-      <rect width="4" height="2" fill="#efefef"/>
-      <rect y="2" width="4" height="2" fill="#b8b8b8"/>
+    <pattern id="scanline-pattern" width="3" height="3" patternUnits="userSpaceOnUse">
+      <rect width="3" height="1" fill="#f7f7f2"/>
+      <rect y="1" width="3" height="1" fill="#9b9b98"/>
+      <rect y="2" width="3" height="1" fill="#303030"/>
     </pattern>
+    <filter id="die-shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="2" stdDeviation="1.8" flood-color="#000" flood-opacity=".42"/>
+    </filter>
   </defs>
-  <g clip-path="url(#die-clip)">
-    <rect x="4" y="4" width="56" height="56" fill="#080808"/>
-    <path d="M4 4H60L4 60Z" fill="url(#scanline-pattern)"/>
-    <path d="M60 4V60H4Z" fill="#a4ff00"/>
-    <path d="M60 4V25L25 60H4Z" fill="#8468ff" opacity=".92"/>
-    <path d="M60 24V43L43 60H24Z" fill="#ff6b2c" opacity=".96"/>
-    <path d="M60 43V60H43Z" fill="#48e7ff"/>
-    <path d="M5 22h25v3H5zm0 9h16v2H5zm7 9h12v3H9z" fill="#fff" opacity=".7"/>
-    <circle cx="16" cy="16" r="4" fill="#050505"/>
-    <circle cx="30" cy="30" r="4" fill="#050505"/>
-    <circle cx="48" cy="48" r="4" fill="#050505"/>
-    <path d="M4 60 60 4" stroke="#050505" stroke-width="2.5"/>
-    <rect x="23" y="24" width="20" height="16" rx="5" fill="#050505"/>
-    <text x="33" y="35.5" fill="#fff" font-family="Arial, sans-serif" font-size="9" font-weight="900" text-anchor="middle" letter-spacing="-1">MX</text>
+
+  <g filter="url(#die-shadow)" stroke="#050505" stroke-linejoin="round" stroke-width="1.5">
+    <g id="crt-face">
+      <path d="M32 5 57 19 32 34 7 19Z" fill="url(#scanline-pattern)"/>
+      <path d="M7 19 32 34 32 59 7 44Z" fill="url(#scanline-pattern)"/>
+      <path d="M9 23 30 35V39L9 27ZM9 32 30 44V47L9 35ZM9 41 27 51V54L9 44Z" fill="#f7f7f2" stroke="none" opacity=".34"/>
+    </g>
+
+    <g id="spectrum-face">
+      <path d="M32 34 57 19 57 44 32 59Z" fill="#a4ff00"/>
+      <path d="M32 34 57 19 57 31 44 39Z" fill="#a4ff00" stroke="none"/>
+      <path d="M44 39 57 31 57 44 49 49Z" fill="#8468ff" stroke="none"/>
+      <path d="M32 34 44 39 49 49 32 59Z" fill="#48e7ff" stroke="none"/>
+      <path d="M7 44 32 59 32 45 19 37Z" fill="#ff6b2c" stroke="none"/>
+      <path d="M19 37 32 45 32 34 25 30Z" fill="#8468ff" stroke="none" opacity=".92"/>
+    </g>
+
+    <g fill="#050505" stroke="none">
+      <ellipse cx="20" cy="18" rx="3.2" ry="2.1" transform="rotate(28 20 18)"/>
+      <ellipse cx="41" cy="18" rx="3.2" ry="2.1" transform="rotate(-28 41 18)"/>
+      <ellipse cx="15" cy="31" rx="2.6" ry="3.7" transform="rotate(-29 15 31)"/>
+      <ellipse cx="25" cy="47" rx="2.6" ry="3.7" transform="rotate(-29 25 47)"/>
+      <ellipse cx="48" cy="31" rx="2.6" ry="3.7" transform="rotate(29 48 31)"/>
+      <ellipse cx="42" cy="47" rx="2.6" ry="3.7" transform="rotate(29 42 47)"/>
+      <ellipse cx="52" cy="42" rx="2.6" ry="3.7" transform="rotate(29 52 42)"/>
+    </g>
+
+    <g id="mx-negative-space" fill="none" stroke="#050505" stroke-linecap="square" opacity=".48">
+      <path d="M12.5 26V38.5L18.5 42V34.5L25 38.5V49"/>
+      <path d="M36.5 34.5 52.5 44M52.5 27.5 36.5 52"/>
+    </g>
+
+    <path d="M32 5 57 19 57 44 32 59 7 44V19Z" fill="none" stroke="#f7f7f2" stroke-width="1.2"/>
+    <path d="M7 19 32 34 57 19M32 34V59" fill="none" stroke="#050505"/>
   </g>
-  <rect x="4" y="4" width="56" height="56" rx="14" fill="none" stroke="#f7f7f2" stroke-width="2"/>
 </svg>

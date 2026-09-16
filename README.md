@@ -11,7 +11,7 @@ docker run --rm -p 8080:8080 merx
 
 Open `http://localhost:8080`.
 
-The container serves the static site through Nginx as an unprivileged user, includes a health check, compresses text assets, and applies long-lived caching to generated campaign images.
+The container serves the static site through Nginx as an unprivileged user, includes a health check, compresses text assets, and applies long-lived caching to static brand assets.
 
 ## Run without Docker
 

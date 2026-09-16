@@ -10,7 +10,7 @@ The primary audience is established and growing YouTube creators who want profes
 
 The visual thesis is **color ignition**: the page begins in black, charcoal, grey, and white, then gains increasingly saturated color through deliberate animated events as the visitor scrolls. The change must feel constructed and kinetic rather than like a continuous background gradient.
 
-The style takes inspiration from Watermelon UI's dark interface, rounded cards, high-density composition, crisp borders, and interactive motion without reproducing its layout or branding. MERX will use larger editorial typography, creator-merch imagery, layered cards, and a more expressive scroll narrative.
+The style takes inspiration from Watermelon UI's dark interface, rounded cards, high-density composition, crisp borders, and interactive motion without reproducing its layout or branding. MERX will use larger editorial typography, graphic capability studies, layered cards, and a more expressive scroll narrative.
 
 ## Page Structure
 
@@ -36,11 +36,11 @@ The style takes inspiration from Watermelon UI's dark interface, rounded cards, 
 - Each stage introduces an additional palette color: green, violet, orange, then cyan.
 - The transition is triggered by section progress and never implemented as a plain full-page color fade.
 
-### 4. Example Merchandise
+### 4. Creative Capabilities
 
-- Three original editorial product images: creator apparel, packaging/fulfillment, and a complete coordinated collection.
-- Images appear in asymmetrical framed cards with concise, believable labels rather than fabricated client claims.
-- Cards use layered hover depth and animated captions.
+- Three original graphic studies demonstrate identity systems, digital experiences, and launch operations.
+- Typographic layouts, interface frames, system maps, and the canonical MERX mark replace fictional product photography.
+- Cards use layered hover depth and animated captions without implying completed client work.
 
 ### 5. Operating Model
 
@@ -63,7 +63,7 @@ The style takes inspiration from Watermelon UI's dark interface, rounded cards, 
 - Palette progression: near-black, graphite, cool grey, and white in the first viewport; electric green first; violet, orange, and cyan added progressively; full palette reserved for the final section.
 - Typography: bold display sans-serif for headlines paired with a clean readable sans-serif for body copy. Type scales responsively and remains readable at 200% zoom.
 - Surfaces: deep charcoal cards, crisp one-pixel borders, generous rounded corners, inset highlights, and occasional bright color blocks.
-- Imagery: three generated raster assets with a coherent high-end editorial campaign look, no visible third-party trademarks, and no text baked into the images.
+- Capability graphics: three code-native panels using the MERX palette, type system, interface motifs, and canonical logo without generated product photography.
 - Iconography: simple functional line icons or familiar symbols. Decorative representational artwork will not be drawn with CSS or hand-written SVG.
 
 ## Motion and Interaction
@@ -86,7 +86,7 @@ The style takes inspiration from Watermelon UI's dark interface, rounded cards, 
 
 - A single static marketing route built with the standard Sites starter unless project initialization selects a simpler supported static structure.
 - Primary implementation stays focused in the main page and global stylesheet, with small focused components only where interaction or readability benefits.
-- Images are stored locally in the site's public assets and include useful alternative text.
+- The canonical SVG logo is stored locally and reused for every brand placement.
 - Site-specific title, description, and favicon are included. No social preview image is generated because it was not requested.
 - The page does not require a database, authentication, external services, or client-side persistence.
 
@@ -95,7 +95,7 @@ The style takes inspiration from Watermelon UI's dark interface, rounded cards, 
 - The production build succeeds with no blocking runtime errors.
 - The first viewport is monochrome and immediately explains the service.
 - Color appears in distinct animated stages and becomes materially richer further down the page.
-- The experience includes three coherent merchandise example images.
+- The experience includes three coherent, non-photographic capability panels.
 - All requested service responsibilities are accurately represented: design, website/storefront, fulfillment, and shipping.
 - Navigation and interactive controls are keyboard accessible.
 - Reduced-motion behavior is implemented.
