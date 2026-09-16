@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Contact Merchendices about a creator merchandise collection, storefront, production, or fulfillment project." />
+    <meta name="theme-color" content="#050505" />
+    <title>Contact — Merchendices</title>
+    <link rel="icon" href="/logo.webp" type="image/webp" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/script.js" defer></script>
+    <script type="module" src="/contact.js"></script>
+    <script type="module" src="/cookie-consent.js"></script>
+  </head>
+  <body class="inner-page" id="top">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="scroll-meter" aria-hidden="true"><span></span></div>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Merchendices home"><img class="brand-logo" src="/logo.webp" alt="" width="40" height="40" /><span>MERCHENDICES</span></a>
+      <nav aria-label="Primary"><a href="/services/">Services</a><a href="/stores/">Stores</a><a href="/about/">About</a></nav>
+      <a class="button button-small button-light magnetic" href="/contact/" aria-current="page">Start a drop <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main id="main">
+      <section class="page-hero page-hero--cyan contact-hero" aria-labelledby="page-title">
+        <div data-reveal><p class="section-kicker"><span>01</span> Contact</p><h1 id="page-title">Let’s make<br />the next drop.</h1></div>
+        <div class="contact-direct" data-reveal><span>Direct email</span><a href="mailto:hello@merchendices.com">hello@merchendices.com</a><p>Project enquiries / partnerships / creator introductions</p></div>
+      </section>
+
+      <section class="contact-section" aria-labelledby="contact-form-title">
+        <div class="contact-aside" data-reveal><p class="section-kicker"><span>02</span> Project brief</p><h2 id="contact-form-title">Tell us where<br />you want to go.</h2><p>Share the essentials. The form opens a prepared message in your email app, so nothing is stored on this website.</p></div>
+        <form class="contact-form" data-contact-form novalidate>
+          <label><span>Your name *</span><input name="name" autocomplete="name" required /></label>
+          <label><span>Email *</span><input type="email" name="email" autocomplete="email" required /></label>
+          <label><span>Channel URL</span><input type="url" name="channel" inputmode="url" placeholder="https://youtube.com/@yourchannel" /></label>
+          <label><span>Audience size *</span><select name="audience" required><option value="">Choose a range</option><option>Under 25k</option><option>25k–100k</option><option>100k–500k</option><option>500k–1m</option><option>1m+</option></select></label>
+          <label class="form-wide"><span>What should we build? *</span><textarea name="message" rows="6" required placeholder="Tell us about the channel, audience, timing, and your first idea."></textarea></label>
+          <div class="form-submit form-wide"><p data-form-status aria-live="polite">Required fields are marked with an asterisk.</p><button class="button button-dark magnetic" type="submit">Prepare email <span aria-hidden="true">↗</span></button></div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer"><a class="brand" href="/"><img class="brand-logo" src="/logo.webp" alt="" width="40" height="40" /><span>MERCHENDICES</span></a><p>hello@merchendices.com</p><div class="footer-actions"><button type="button" data-cookie-settings>Cookie settings</button><a href="#top">Back to top ↑</a></div></footer>
+  </body>
+</html>

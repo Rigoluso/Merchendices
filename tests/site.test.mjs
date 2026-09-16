@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import test from "node:test";
 import assert from "node:assert/strict";
 
@@ -9,13 +10,13 @@ test("the landing page exposes the required narrative sections", () => {
     assert.match(html, new RegExp(`id=["']${id}["']`));
   }
 
-  assert.match(html, /MERX/);
+  assert.match(html, /MERCHENDICES/);
   assert.match(html, /design/i);
   assert.match(html, /storefront/i);
   assert.match(html, /ship/i);
 });
 
-test("the MERX name replaces the former identity everywhere", () => {
+test("the Merchendices name replaces former identities everywhere", () => {
   const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
   const packageJson = JSON.parse(
     readFileSync(new URL("../package.json", import.meta.url), "utf8"),
@@ -28,9 +29,112 @@ test("the MERX name replaces the former identity everywhere", () => {
 
   for (const content of [html, readme, validator]) {
     assert.doesNotMatch(content, /creator[ -]supply/i);
+    assert.doesNotMatch(content, /\bMERX\b/i);
+    assert.match(content, /merchendices/i);
   }
 
-  assert.equal(packageJson.name, "merx");
+  assert.equal(packageJson.name, "merchendices");
+});
+
+test("the display scale stays compact while body copy remains readable", () => {
+  const css = readFileSync(new URL("../site/styles.css", import.meta.url), "utf8");
+  const heroMax = Number(css.match(/--display-hero-max:\s*([\d.]+)rem/)?.[1]);
+  const sectionMax = Number(css.match(/--display-section-max:\s*([\d.]+)rem/)?.[1]);
+  const sectionSpace = Number(css.match(/--section-space-max:\s*([\d.]+)rem/)?.[1]);
+
+  assert.ok(heroMax > 0 && heroMax <= 7.6, `hero max is ${heroMax}rem`);
+  assert.ok(sectionMax > 0 && sectionMax <= 6.4, `section max is ${sectionMax}rem`);
+  assert.ok(sectionSpace > 0 && sectionSpace <= 9, `section spacing is ${sectionSpace}rem`);
+  assert.match(css, /body\s*{[^}]*font-size:\s*1rem/is);
+});
+
+test("the current-page style does not hide the contact button label", () => {
+  const css = readFileSync(new URL("../site/styles.css", import.meta.url), "utf8");
+
+  assert.doesNotMatch(css, /\.site-header\s+\[aria-current=["']page["']\]/);
+  assert.match(css, /\.site-header\s+nav\s+\[aria-current=["']page["']\][^{]*{[^}]*color:\s*var\(--white\)/is);
+});
+
+test("the site validator accepts navigation rooted at the deployed site", () => {
+  const result = spawnSync(process.execPath, ["scripts/check-site.mjs"], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8",
+  });
+
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+});
+
+test("the site validator checks every HTML route recursively", () => {
+  const result = spawnSync(process.execPath, ["scripts/check-site.mjs"], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8",
+  });
+
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+  assert.match(result.stdout, /5 HTML documents/);
+});
+
+test("the site provides complete services, stores, about, and contact routes", () => {
+  const routes = [
+    ["services", "Services"],
+    ["stores", "Stores"],
+    ["about", "About"],
+    ["contact", "Start a drop"],
+  ];
+  const titles = new Set();
+
+  for (const [route, label] of routes) {
+    const url = new URL(`../site/${route}/index.html`, import.meta.url);
+    assert.equal(existsSync(url), true, `/${route}/ exists`);
+    const html = readFileSync(url, "utf8");
+    const title = html.match(/<title>([^<]+)<\/title>/i)?.[1];
+    titles.add(title);
+    assert.match(html, /<meta\s+name=["']description["'][^>]+content=["'][^"']+["']/i);
+    assert.equal((html.match(/<h1\b/gi) ?? []).length, 1, `/${route}/ has one h1`);
+    assert.match(html, new RegExp(`href=["']/${route}/["'][^>]+aria-current=["']page["']`, "i"));
+    assert.match(html, new RegExp(`>${label}\\b`, "i"));
+    assert.match(html, /MERCHENDICES/);
+    assert.match(html, /src=["']\/logo\.webp["']/);
+    assert.match(html, /href=["']\/styles\.css["']/);
+  }
+
+  assert.equal(titles.size, routes.length);
+});
+
+test("the stores page presents three honest demonstration storefronts", () => {
+  const html = readFileSync(new URL("../site/stores/index.html", import.meta.url), "utf8");
+
+  assert.equal((html.match(/class=["'][^"']*store-showcase\b/g) ?? []).length, 3);
+  assert.equal((html.match(/<p class=["']store-label["']>Demonstration store/gi) ?? []).length, 3);
+  assert.match(html, /store-browser/);
+  assert.doesNotMatch(html, /sales generated|conversion rate|revenue increased/i);
+  assert.match(html, /not claimed client work/i);
+});
+
+test("the contact page publishes a direct address and a complete enquiry form", () => {
+  const html = readFileSync(new URL("../site/contact/index.html", import.meta.url), "utf8");
+
+  assert.match(html, /href=["']mailto:hello@merchendices\.com["']/i);
+  assert.match(html, /data-contact-form/);
+  for (const field of ["name", "email", "channel", "audience", "message"]) {
+    assert.match(html, new RegExp(`name=["']${field}["']`, "i"));
+  }
+  assert.match(html, /data-form-status[^>]+aria-live=["']polite["']/i);
+});
+
+test("every page loads shared cookie controls and exposes settings", () => {
+  const pages = [
+    new URL("../site/index.html", import.meta.url),
+    ...["services", "stores", "about", "contact"].map(
+      (route) => new URL(`../site/${route}/index.html`, import.meta.url),
+    ),
+  ];
+
+  for (const page of pages) {
+    const html = readFileSync(page, "utf8");
+    assert.match(html, /type=["']module["'][^>]+src=["']\/cookie-consent\.js["']/i);
+    assert.match(html, /data-cookie-settings/);
+  }
 });
 
 test("the page includes the complete service and process story", () => {
