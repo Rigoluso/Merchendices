@@ -1,12 +1,12 @@
-# Creator Supply
+# MERX
 
 A maximalist, animated landing page for a full-service YouTuber merchandise studio. The experience starts in monochrome and introduces electric green, violet, orange, and cyan through distinct scroll-led scenes.
 
 ## Run with Docker
 
 ```sh
-docker build -t creator-supply .
-docker run --rm -p 8080:8080 creator-supply
+docker build -t merx .
+docker run --rm -p 8080:8080 merx
 ```
 
 Open `http://localhost:8080`.

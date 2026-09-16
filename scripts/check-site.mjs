@@ -29,4 +29,4 @@ for (const file of ["index.html", "styles.css", "script.js"]) {
   if (/\b(?:TODO|TBD)\b/.test(source)) throw new Error(`Unfinished marker in site/${file}`);
 }
 
-console.log(`Creator Supply site validated: ${references.length} local and navigational references checked.`);
+console.log(`MERX site validated: ${references.length} local and navigational references checked.`);

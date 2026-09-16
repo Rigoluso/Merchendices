@@ -9,10 +9,31 @@ test("the landing page exposes the required narrative sections", () => {
     assert.match(html, new RegExp(`id=["']${id}["']`));
   }
 
-  assert.match(html, /Creator Supply/);
+  assert.match(html, /MERX/);
   assert.match(html, /design/i);
   assert.match(html, /storefront/i);
   assert.match(html, /ship/i);
+});
+
+test("the MERX name and MX monogram replace the former identity everywhere", () => {
+  const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
+  const logo = readFileSync(new URL("../site/logo.svg", import.meta.url), "utf8");
+  const packageJson = JSON.parse(
+    readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+  );
+  const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
+  const validator = readFileSync(
+    new URL("../scripts/check-site.mjs", import.meta.url),
+    "utf8",
+  );
+
+  for (const content of [html, logo, readme, validator]) {
+    assert.doesNotMatch(content, /creator[ -]supply/i);
+  }
+
+  assert.equal(packageJson.name, "merx");
+  assert.match(logo, />MX<\/text>/);
+  assert.doesNotMatch(logo, />CS<\/text>/);
 });
 
 test("the page includes the complete service and process story", () => {

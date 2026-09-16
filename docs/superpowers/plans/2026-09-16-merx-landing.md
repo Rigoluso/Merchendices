@@ -1,14 +1,14 @@
-# Creator Supply Landing Page Implementation Plan
+# MERX Landing Page Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a complete animated Creator Supply landing page that is served as static files by a production Nginx Docker image.
+**Goal:** Build a complete animated MERX landing page that is served as static files by a production Nginx Docker image.
 
 **Architecture:** A dependency-free single-page site lives in `site/` and uses semantic HTML, a focused stylesheet, and progressive-enhancement JavaScript. Generated merchandise campaign images are local assets. The root Dockerfile packages the static directory into an unprivileged Nginx runtime with a dedicated configuration for compression, caching, and SPA-safe routing.
 
 **Tech Stack:** HTML5, CSS, vanilla JavaScript, Node.js built-in test runner, Docker, Nginx 1.27 Alpine
 
-**Spec:** `docs/superpowers/specs/2026-09-16-creator-supply-landing-design.md`
+**Spec:** `docs/superpowers/specs/2026-09-16-merx-landing-design.md`
 
 ## Global Constraints
 
@@ -49,7 +49,7 @@ test("the landing page exposes the required narrative sections", () => {
   for (const id of ["top", "services", "process", "work", "model", "contact"]) {
     assert.match(html, new RegExp(`id=["']${id}["']`));
   }
-  assert.match(html, /Creator Supply/);
+  assert.match(html, /MERX/);
   assert.match(html, /design/i);
   assert.match(html, /storefront/i);
   assert.match(html, /ship/i);
@@ -64,7 +64,7 @@ Expected: FAIL because `site/index.html` does not exist.
 
 - [ ] **Step 3: Create the semantic page shell and metadata**
 
-Create `site/index.html` with a sticky header, hero, six named page regions, footer, stylesheet link, deferred script, title `Creator Supply — Merch, made for your channel`, a concise service description, viewport metadata, and `favicon.svg`. Every navigation control is a real anchor linked to one of the named regions.
+Create `site/index.html` with a sticky header, hero, six named page regions, footer, stylesheet link, deferred script, title `MERX — Merch, made for your channel`, a concise service description, viewport metadata, and `favicon.svg`. Every navigation control is a real anchor linked to one of the named regions.
 
 - [ ] **Step 4: Add the initial visual tokens and progressive enhancement hook**
 
@@ -80,7 +80,7 @@ Expected: PASS.
 
 ```bash
 git add package.json tests/site.test.mjs site/index.html site/styles.css site/script.js site/favicon.svg
-git commit -m "feat: establish Creator Supply landing page shell"
+git commit -m "feat: establish MERX landing page shell"
 ```
 
 ### Task 2: Build the maximalist monochrome-to-color narrative
@@ -261,7 +261,7 @@ Expected: PASS.
 
 ```bash
 git add site/assets site/index.html site/styles.css tests/site.test.mjs
-git commit -m "feat: add Creator Supply campaign imagery"
+git commit -m "feat: add MERX campaign imagery"
 ```
 
 ### Task 5: Package the site for Docker and Nginx
@@ -277,7 +277,7 @@ git commit -m "feat: add Creator Supply campaign imagery"
 
 **Interfaces:**
 - Consumes: the complete `site/` static directory.
-- Produces: container image command `docker build -t creator-supply .` and runtime command `docker run --rm -p 8080:8080 creator-supply`.
+- Produces: container image command `docker build -t merx .` and runtime command `docker run --rm -p 8080:8080 merx`.
 
 - [ ] **Step 1: Add failing delivery tests**
 
@@ -321,13 +321,13 @@ Expected: both exit successfully.
 
 - [ ] **Step 7: Build and smoke-test when Docker is available**
 
-Run: `docker build -t creator-supply .`
+Run: `docker build -t merx .`
 
-Run: `docker run --rm -d --name creator-supply-test -p 8080:8080 creator-supply`
+Run: `docker run --rm -d --name merx-test -p 8080:8080 merx`
 
-Run: `node -e "fetch('http://127.0.0.1:8080').then(r=>{if(!r.ok)throw Error(String(r.status));return r.text()}).then(t=>{if(!t.includes('Creator Supply'))throw Error('missing brand')})"`
+Run: `node -e "fetch('http://127.0.0.1:8080').then(r=>{if(!r.ok)throw Error(String(r.status));return r.text()}).then(t=>{if(!t.includes('MERX'))throw Error('missing brand')})"`
 
-Run: `docker stop creator-supply-test`
+Run: `docker stop merx-test`
 
 Expected: build succeeds, the page responds with HTTP 200 and contains the brand name, and the test container stops cleanly. If Docker is not installed on the execution host, report that exact limitation after all non-Docker checks pass.
 

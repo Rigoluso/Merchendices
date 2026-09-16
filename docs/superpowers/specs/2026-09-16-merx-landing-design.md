@@ -1,8 +1,8 @@
-# Creator Supply Landing Page Design
+# MERX Landing Page Design
 
 ## Purpose
 
-Create a one-page marketing site for Creator Supply, a service that helps YouTubers launch merchandise without setup costs. The site must communicate that Creator Supply handles product design, storefront creation, fulfillment, and shipping while creators earn from sales and keep their attention on content.
+Create a one-page marketing site for MERX, a service that helps YouTubers launch merchandise without setup costs. The site must communicate that MERX handles product design, storefront creation, fulfillment, and shipping while creators earn from sales and keep their attention on content.
 
 The primary audience is established and growing YouTube creators who want professional merchandise but do not want to manage inventory, logistics, or web development.
 
@@ -10,15 +10,15 @@ The primary audience is established and growing YouTube creators who want profes
 
 The visual thesis is **color ignition**: the page begins in black, charcoal, grey, and white, then gains increasingly saturated color through deliberate animated events as the visitor scrolls. The change must feel constructed and kinetic rather than like a continuous background gradient.
 
-The style takes inspiration from Watermelon UI's dark interface, rounded cards, high-density composition, crisp borders, and interactive motion without reproducing its layout or branding. Creator Supply will use larger editorial typography, creator-merch imagery, layered cards, and a more expressive scroll narrative.
+The style takes inspiration from Watermelon UI's dark interface, rounded cards, high-density composition, crisp borders, and interactive motion without reproducing its layout or branding. MERX will use larger editorial typography, creator-merch imagery, layered cards, and a more expressive scroll narrative.
 
 ## Page Structure
 
 ### 1. Header and Hero
 
-- Compact sticky header with the Creator Supply wordmark, section navigation, and a primary `Start a drop` control.
+- Compact sticky header with the MERX wordmark, section navigation, and a primary `Start a drop` control.
 - Black background with subtle grid/noise texture and restrained grey borders.
-- Oversized headline focused on the value proposition: the creator brings the audience; Creator Supply builds and ships the merchandise.
+- Oversized headline focused on the value proposition: the creator brings the audience; MERX builds and ships the merchandise.
 - Short supporting copy explaining the free setup model.
 - A visual stack of monochrome merchandising cards that introduces the card language used throughout the page.
 - Primary navigation actions scroll to relevant page sections. Because no contact destination was supplied, the final conversion control scrolls to the closing invitation rather than inventing an email address or external form.
@@ -44,8 +44,8 @@ The style takes inspiration from Watermelon UI's dark interface, rounded cards, 
 
 ### 5. Operating Model
 
-- A direct summary of the arrangement: zero setup fee, no inventory burden for the creator, Creator Supply manages the operational work, and the creator earns from merchandise sales.
-- A comparison-style composition contrasts the creator's responsibilities with Creator Supply's responsibilities without presenting unsupported financial figures.
+- A direct summary of the arrangement: zero setup fee, no inventory burden for the creator, MERX manages the operational work, and the creator earns from merchandise sales.
+- A comparison-style composition contrasts the creator's responsibilities with MERX's responsibilities without presenting unsupported financial figures.
 
 ### 6. Closing Invitation
 
