@@ -71,3 +71,14 @@ test("campaign images use responsive local markup and useful alt text", () => {
   assert.match(html, /width=["']1600["']\s+height=["']1200["']/);
   assert.match(html, /alt=["'][^"']{20,}["']/);
 });
+
+test("the container serves the static site through unprivileged nginx", () => {
+  const dockerfile = readFileSync(new URL("../Dockerfile", import.meta.url), "utf8");
+  const nginx = readFileSync(new URL("../nginx.conf", import.meta.url), "utf8");
+
+  assert.match(dockerfile, /nginx:1\.27-alpine/);
+  assert.match(dockerfile, /COPY(?: --chown=\S+)? site\//);
+  assert.match(dockerfile, /EXPOSE 8080/);
+  assert.match(nginx, /listen\s+8080/);
+  assert.match(nginx, /try_files\s+\$uri\s+\$uri\/\s+\/index\.html/);
+});

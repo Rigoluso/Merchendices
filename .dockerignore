@@ -1,0 +1,9 @@
+.git
+.worktrees
+docs
+tests
+scripts
+README.md
+package.json
+node_modules
+npm-debug.log
