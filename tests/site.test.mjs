@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 import assert from "node:assert/strict";
 
@@ -53,4 +53,21 @@ test("interactive visuals are excluded from keyboard order", () => {
 
   assert.match(html, /aria-hidden=["']true["']/);
   assert.match(html, /aria-label=["']Primary["']/);
+});
+
+test("all three merchandise campaign images are local and present", () => {
+  for (const name of ["night-shift.webp", "fulfillment.webp", "studio-pack.webp"]) {
+    assert.equal(existsSync(new URL(`../site/assets/${name}`, import.meta.url)), true, name);
+  }
+});
+
+test("campaign images use responsive local markup and useful alt text", () => {
+  const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
+
+  for (const name of ["night-shift.webp", "fulfillment.webp", "studio-pack.webp"]) {
+    assert.match(html, new RegExp(`src=["']assets/${name}["']`));
+  }
+
+  assert.match(html, /width=["']1600["']\s+height=["']1200["']/);
+  assert.match(html, /alt=["'][^"']{20,}["']/);
 });
