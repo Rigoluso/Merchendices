@@ -17,7 +17,6 @@ test("the landing page exposes the required narrative sections", () => {
 
 test("the MERX name replaces the former identity everywhere", () => {
   const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
-  const logo = readFileSync(new URL("../site/logo.svg", import.meta.url), "utf8");
   const packageJson = JSON.parse(
     readFileSync(new URL("../package.json", import.meta.url), "utf8"),
   );
@@ -27,13 +26,11 @@ test("the MERX name replaces the former identity everywhere", () => {
     "utf8",
   );
 
-  for (const content of [html, logo, readme, validator]) {
+  for (const content of [html, readme, validator]) {
     assert.doesNotMatch(content, /creator[ -]supply/i);
   }
 
   assert.equal(packageJson.name, "merx");
-  assert.doesNotMatch(logo, /<text\b/i);
-  assert.match(logo, /id=["']mx-negative-space["']/i);
 });
 
 test("the page includes the complete service and process story", () => {
@@ -110,24 +107,19 @@ test("the container serves the static site through unprivileged nginx", () => {
   assert.match(nginx, /try_files\s+\$uri\s+\$uri\/\s+\/index\.html/);
 });
 
-test("the dimensional split-signal die is used throughout the brand", () => {
+test("the supplied optimized logo is used throughout the brand", () => {
   const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
-  const logoUrl = new URL("../site/logo.svg", import.meta.url);
+  const logoUrl = new URL("../site/logo.webp", import.meta.url);
 
   assert.equal(existsSync(logoUrl), true);
-  assert.equal((html.match(/src=["']logo\.svg["']/g) ?? []).length, 5);
-  assert.match(html, /rel=["']icon["'][^>]+href=["']logo\.svg["']/);
-  assert.doesNotMatch(html, /favicon\.svg/);
+  assert.equal(existsSync(new URL("../site/logo.svg", import.meta.url)), false);
+  assert.equal((html.match(/src=["']logo\.webp["']/g) ?? []).length, 5);
+  assert.match(html, /rel=["']icon["'][^>]+href=["']logo\.webp["'][^>]+type=["']image\/webp["']/);
 
-  const logo = readFileSync(logoUrl, "utf8");
-  assert.match(logo, /scanline/i);
-  assert.match(logo, /id=["']crt-face["']/i);
-  assert.match(logo, /id=["']spectrum-face["']/i);
-  assert.match(logo, /id=["']mx-negative-space["']/i);
-  assert.doesNotMatch(logo, /<text\b/i);
-  for (const color of ["#a4ff00", "#8468ff", "#ff6b2c", "#48e7ff"]) {
-    assert.match(logo, new RegExp(color, "i"));
-  }
+  const logo = readFileSync(logoUrl);
+  assert.equal(logo.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(logo.subarray(8, 12).toString("ascii"), "WEBP");
+  assert.ok(logo.byteLength <= 160 * 1024, `logo is ${logo.byteLength} bytes`);
 });
 
 test("the work section presents capabilities rather than specific merchandise", () => {

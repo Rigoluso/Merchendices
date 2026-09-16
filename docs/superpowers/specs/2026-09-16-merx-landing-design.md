@@ -86,7 +86,7 @@ The style takes inspiration from Watermelon UI's dark interface, rounded cards, 
 
 - A single static marketing route built with the standard Sites starter unless project initialization selects a simpler supported static structure.
 - Primary implementation stays focused in the main page and global stylesheet, with small focused components only where interaction or readability benefits.
-- The canonical SVG logo is stored locally and reused for every brand placement.
+- The canonical transparent WebP logo is stored locally and reused for every brand placement.
 - Site-specific title, description, and favicon are included. No social preview image is generated because it was not requested.
 - The page does not require a database, authentication, external services, or client-side persistence.
 

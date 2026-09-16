@@ -4,7 +4,7 @@
 
 **Goal:** Build a complete animated MERX landing page that is served as static files by a production Nginx Docker image.
 
-**Architecture:** A dependency-free single-page site lives in `site/` and uses semantic HTML, a focused stylesheet, progressive-enhancement JavaScript, and a canonical SVG brand mark. The root Dockerfile packages the static directory into an unprivileged Nginx runtime with a dedicated configuration for compression, caching, and SPA-safe routing.
+**Architecture:** A dependency-free single-page site lives in `site/` and uses semantic HTML, a focused stylesheet, progressive-enhancement JavaScript, and a canonical transparent WebP brand mark. The root Dockerfile packages the static directory into an unprivileged Nginx runtime with a dedicated configuration for compression, caching, and SPA-safe routing.
 
 **Tech Stack:** HTML5, CSS, vanilla JavaScript, Node.js built-in test runner, Docker, Nginx 1.27 Alpine
 
@@ -210,14 +210,14 @@ git commit -m "feat: add accessible staged motion"
 ### Task 4: Build the MERX identity and capability system
 
 **Files:**
-- Create: `site/logo.svg`
+- Create: `site/logo.webp`
 - Modify: `tests/site.test.mjs`
 - Modify: `site/index.html`
 - Modify: `site/styles.css`
 
 **Interfaces:**
 - Consumes: the three figure shells in `#work` and existing MERX color tokens.
-- Produces: one canonical dimensional die SVG and three code-native capability panels.
+- Produces: one canonical optimized die WebP and three code-native capability panels.
 
 - [ ] **Step 1: Add failing identity and no-photography contract tests**
 
@@ -237,15 +237,15 @@ Expected: FAIL while the old photo assets and flat logo still exist.
 
 - [ ] **Step 3: Create the dimensional MERX die**
 
-Construct an isometric three-face die in `site/logo.svg`. Use CRT scanlines on the monochrome faces and green, violet, orange, and cyan facets on the color faces. Form a subtle `M` and `X` from negative-space seams without using an SVG text element.
+Prepare the supplied isometric die artwork as `site/logo.webp`: isolate it on transparency, retain its monochrome and psychedelic faces, and optimize it for fast delivery without redesigning the brand mark.
 
 - [ ] **Step 4: Replace photography with graphic capability panels**
 
-Delete the three generated WebP assets. Rebuild the work section as identity-system, digital-experience, and launch-operations panels using only HTML, CSS, and the canonical SVG logo.
+Delete the three generated mockup WebP assets. Rebuild the work section as identity-system, digital-experience, and launch-operations panels using only HTML, CSS, and the canonical supplied logo.
 
 - [ ] **Step 5: Verify reuse and responsive behavior**
 
-Reuse `logo.svg` in the header, footer, favicon, and every capability panel. Confirm the hidden letterforms remain subtle at header size and the capability panels stack without overflow on mobile.
+Reuse `logo.webp` in the header, footer, favicon, and every capability panel. Confirm the mark remains legible at header size and the capability panels stack without overflow on mobile.
 
 - [ ] **Step 6: Run the tests**
 

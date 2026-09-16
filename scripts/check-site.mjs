@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const siteRoot = resolve(root, "site");
-const requiredFiles = ["index.html", "styles.css", "script.js", "logo.svg"];
+const requiredFiles = ["index.html", "styles.css", "script.js", "logo.webp"];
 
 for (const file of requiredFiles) {
   const path = resolve(siteRoot, file);
