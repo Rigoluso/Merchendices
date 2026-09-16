@@ -1,6 +1,7 @@
 # Merchendices
-
 A compact, animated multipage website for a full-service YouTuber merchandise studio. The experience starts in monochrome and introduces electric green, violet, orange, and cyan through distinct scenes.
+
+Merchendices partners with influencers to build their shops, design their merchandise, and handle fulfillment.
 
 ## Pages
 
