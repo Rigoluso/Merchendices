@@ -2,312 +2,373 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a maximalist, animated Creator Supply landing page that progressively introduces color, includes three original merchandise images, and runs as a static site in Docker with Nginx.
+**Goal:** Build a complete animated Creator Supply landing page that is served as static files by a production Nginx Docker image.
 
-**Architecture:** Use a dependency-free static site under `public/` so the same assets can be opened by a development server or copied directly into an Nginx image. Keep page structure in semantic HTML, visual direction and responsive behavior in one stylesheet, and progressive enhancement in small JavaScript modules whose pure functions can be tested with Node's built-in test runner.
+**Architecture:** A dependency-free single-page site lives in `site/` and uses semantic HTML, a focused stylesheet, and progressive-enhancement JavaScript. Generated merchandise campaign images are local assets. The root Dockerfile packages the static directory into an unprivileged Nginx runtime with a dedicated configuration for compression, caching, and SPA-safe routing.
 
-**Tech Stack:** HTML5, CSS, ES modules, Node.js built-in test runner, Docker, Nginx Alpine
+**Tech Stack:** HTML5, CSS, vanilla JavaScript, Node.js built-in test runner, Docker, Nginx 1.27 Alpine
 
 **Spec:** `docs/superpowers/specs/2026-09-16-creator-supply-landing-design.md`
 
 ## Global Constraints
 
-- The first viewport is black, charcoal, grey, and white; color enters in discrete animated stages rather than a continuous page gradient.
-- Include three original merchandise images with no third-party branding and no text baked into the images.
-- Represent design, storefront creation, fulfillment, and shipping accurately without invented performance metrics or customer claims.
-- Provide useful keyboard behavior, visible focus states, reduced-motion behavior, and a readable mobile layout without horizontal overflow.
-- Do not invent contact information, customer logos, legal links, social accounts, testimonials, or financial figures.
-- The final deliverable must build and run from the included Dockerfile with Nginx.
+- Keep the implementation to one static marketing route with no database, authentication, external service, or persistent client state.
+- The first viewport uses only black, graphite, grey, and white; electric green, violet, orange, and cyan enter in distinct stages further down.
+- Include exactly three coherent, locally stored merchandise example images with no third-party trademarks or baked-in text.
+- Use discrete scroll events, masks, stacking, and panel entrances; do not implement the page progression as one continuous background gradient.
+- Preserve complete content and navigation when JavaScript or animation is unavailable.
+- Implement `prefers-reduced-motion`, keyboard focus states, responsive layouts, useful alternative text, metadata, and a site-specific favicon.
+- Do not invent customer names, testimonials, financial figures, legal links, social accounts, contact information, or client performance claims.
+- The runtime image must serve the finished site through Nginx and expose port `8080`.
 
 ---
 
-### Task 1: Static Shell and Docker Contract
+### Task 1: Establish the static application contract
 
 **Files:**
 - Create: `package.json`
-- Create: `tests/site-structure.test.mjs`
-- Create: `public/index.html`
-- Create: `public/styles.css`
-- Create: `public/favicon.svg`
-- Create: `Dockerfile`
-- Create: `nginx.conf`
-- Create: `.dockerignore`
+- Create: `tests/site.test.mjs`
+- Create: `site/index.html`
+- Create: `site/styles.css`
+- Create: `site/script.js`
+- Create: `site/favicon.svg`
 
 **Interfaces:**
-- Consumes: the approved design specification.
-- Produces: a static document served from `/usr/share/nginx/html`, with stable section IDs `top`, `services`, `process`, `work`, `model`, and `start`.
+- Produces: a static document with IDs `top`, `services`, `process`, `work`, `model`, and `contact`; CSS entry point `styles.css`; JavaScript entry point `script.js`.
+- Consumes: the approved copy and structure from the design spec.
 
-- [ ] **Step 1: Write the failing shell test**
+- [ ] **Step 1: Write the failing structure test**
 
 ```js
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
 
-test("the landing page exposes the complete navigation contract", async () => {
-  const html = await readFile(new URL("../public/index.html", import.meta.url), "utf8");
-  for (const id of ["top", "services", "process", "work", "model", "start"]) {
+test("the landing page exposes the required narrative sections", () => {
+  const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
+  for (const id of ["top", "services", "process", "work", "model", "contact"]) {
     assert.match(html, new RegExp(`id=["']${id}["']`));
   }
   assert.match(html, /Creator Supply/);
-  assert.match(html, /prefers-reduced-motion/);
+  assert.match(html, /design/i);
+  assert.match(html, /storefront/i);
+  assert.match(html, /ship/i);
 });
 ```
 
-- [ ] **Step 2: Run the test and confirm the expected missing-file failure**
+- [ ] **Step 2: Run the test and verify it fails**
 
-Run: `node --test tests/site-structure.test.mjs`
-Expected: FAIL with `ENOENT` for `public/index.html`.
+Run: `node --test tests/site.test.mjs`
 
-- [ ] **Step 3: Implement the minimal shell and deployment files**
+Expected: FAIL because `site/index.html` does not exist.
 
-Create semantic section landmarks, stylesheet and module-script references, a compact favicon, a static `package.json` test script, `nginx.conf` with SPA-safe fallback and cache headers, and a `Dockerfile` that copies `public/` into `nginx:1.27-alpine`.
+- [ ] **Step 3: Create the semantic page shell and metadata**
 
-- [ ] **Step 4: Run the shell test**
+Create `site/index.html` with a sticky header, hero, six named page regions, footer, stylesheet link, deferred script, title `Creator Supply — Merch, made for your channel`, a concise service description, viewport metadata, and `favicon.svg`. Every navigation control is a real anchor linked to one of the named regions.
 
-Run: `npm test`
-Expected: PASS for the navigation contract.
+- [ ] **Step 4: Add the initial visual tokens and progressive enhancement hook**
 
-- [ ] **Step 5: Commit the shell**
+Define color tokens for black, graphite, white, green, violet, orange, and cyan in `site/styles.css`. Add a visually hidden skip link, visible focus states, a readable type scale, and `.js [data-reveal]` as the only hidden-at-rest reveal selector. In `site/script.js`, add the `js` class to the document root before setting up any animation.
+
+- [ ] **Step 5: Run the structure test**
+
+Run: `node --test tests/site.test.mjs`
+
+Expected: PASS.
+
+- [ ] **Step 6: Commit the application shell**
 
 ```bash
-git add package.json tests/site-structure.test.mjs public/index.html public/styles.css public/favicon.svg Dockerfile nginx.conf .dockerignore
-git commit -m "feat: add static Creator Supply shell"
+git add package.json tests/site.test.mjs site/index.html site/styles.css site/script.js site/favicon.svg
+git commit -m "feat: establish Creator Supply landing page shell"
 ```
 
-### Task 2: Complete Narrative and Color-Ignition Visual System
+### Task 2: Build the maximalist monochrome-to-color narrative
 
 **Files:**
-- Modify: `tests/site-structure.test.mjs`
-- Modify: `public/index.html`
-- Modify: `public/styles.css`
+- Modify: `tests/site.test.mjs`
+- Modify: `site/index.html`
+- Modify: `site/styles.css`
 
 **Interfaces:**
-- Consumes: the stable section IDs from Task 1.
-- Produces: service cards with `data-service`, process stages with `data-stage`, work cards with `data-project`, and scroll-reveal elements with `data-reveal`.
+- Consumes: the section IDs and global token names created in Task 1.
+- Produces: `.service-grid`, `.process-stage`, `.work-grid`, `.split-model`, `.closing-panel`, and `[data-accent]` compositions used by Task 3.
 
-- [ ] **Step 1: Add failing content and visual-contract tests**
+- [ ] **Step 1: Add failing content and styling assertions**
 
 ```js
-test("the page explains every responsibility and staged color system", async () => {
-  const html = await readFile(new URL("../public/index.html", import.meta.url), "utf8");
-  const css = await readFile(new URL("../public/styles.css", import.meta.url), "utf8");
-  for (const phrase of ["Design", "Storefront", "Production", "Worldwide shipping", "Zero setup fee"]) {
-    assert.match(html, new RegExp(phrase, "i"));
-  }
-  assert.equal((html.match(/data-service=/g) ?? []).length, 4);
-  assert.equal((html.match(/data-stage=/g) ?? []).length, 4);
-  assert.equal((html.match(/data-project=/g) ?? []).length, 3);
-  for (const token of ["--acid", "--violet", "--orange", "--cyan"]) assert.match(css, new RegExp(token));
+test("the page includes the complete service and process story", () => {
+  const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
+  for (const phrase of [
+    "We design it",
+    "We build the store",
+    "We make every piece",
+    "We ship every order",
+    "Zero setup fee",
+  ]) assert.match(html, new RegExp(phrase, "i"));
+});
+
+test("the stylesheet defines staged accent colors without a page gradient", () => {
+  const css = readFileSync(new URL("../site/styles.css", import.meta.url), "utf8");
+  for (const token of ["--green", "--violet", "--orange", "--cyan"]) assert.match(css, new RegExp(token));
+  assert.doesNotMatch(css, /body[^}]*linear-gradient/is);
 });
 ```
 
-- [ ] **Step 2: Run the focused test and confirm missing narrative failures**
+- [ ] **Step 2: Run the tests and verify the new assertions fail**
 
-Run: `node --test --test-name-pattern="responsibility|color" tests/site-structure.test.mjs`
-Expected: FAIL because the minimal shell lacks the required service, process, work, and palette contracts.
+Run: `node --test tests/site.test.mjs`
 
-- [ ] **Step 3: Implement the complete semantic page and responsive visual system**
+Expected: FAIL on missing service/process copy and composed class names.
 
-Build the hero, four service cards, sticky four-stage process, three-project gallery, operating-model comparison, closing invitation, and footer. Apply a black-to-color section rhythm using distinct colored panels, borders, bands, and masks. Include desktop, tablet, and mobile rules, visible focus styles, and coarse-pointer safeguards.
+- [ ] **Step 3: Implement the page content**
 
-- [ ] **Step 4: Run all static contract tests**
+Build the hero around `Your channel. Your world. Your merch.` and a concise explanation of the free setup model. Add four service cards, four process stages, three image figure shells, the responsibility split, closing invitation, and minimal footer. Keep examples explicitly conceptual, with labels such as `Night Shift Hoodie`, `Signal Cap`, and `Studio Pack`, not purported client work.
 
-Run: `npm test`
-Expected: PASS for shell and narrative tests.
+- [ ] **Step 4: Implement the visual system**
 
-- [ ] **Step 5: Commit the complete static composition**
+Use oversized editorial type, rounded dark cards, inset borders, a background grid, layered frames, offset labels, and alternating asymmetric section layouts. Keep the hero monochrome. Introduce green in services, violet in process, orange in work, cyan in the operating model, and all accents in the closing section through separate blocks and borders.
+
+- [ ] **Step 5: Add responsive layouts**
+
+At widths below `900px`, remove sticky process positioning and reduce overlapping offsets. Below `640px`, switch all grids to one column, keep tap targets at least `44px`, and prevent decorative bands from increasing page width.
+
+- [ ] **Step 6: Run the tests**
+
+Run: `node --test tests/site.test.mjs`
+
+Expected: PASS.
+
+- [ ] **Step 7: Commit the complete static composition**
 
 ```bash
-git add tests/site-structure.test.mjs public/index.html public/styles.css
-git commit -m "feat: build color-ignition landing page"
+git add tests/site.test.mjs site/index.html site/styles.css
+git commit -m "feat: create the color ignition landing narrative"
 ```
 
-### Task 3: Tested Motion Core and Progressive Interactions
+### Task 3: Add accessible scroll and pointer motion
 
 **Files:**
-- Create: `tests/motion-core.test.mjs`
-- Create: `public/motion-core.mjs`
-- Create: `public/script.js`
-- Modify: `public/index.html`
-- Modify: `public/styles.css`
+- Modify: `tests/site.test.mjs`
+- Modify: `site/index.html`
+- Modify: `site/styles.css`
+- Modify: `site/script.js`
 
 **Interfaces:**
-- Produces: `clamp(value, min, max): number`, `stageForProgress(progress): 0 | 1 | 2 | 3 | 4`, and `motionAllowed(reducedMotion, coarsePointer): boolean`.
-- Consumes: `[data-reveal]`, `[data-stage]`, `[data-tilt]`, `[data-menu-toggle]`, and `[data-menu]` hooks from the document.
+- Consumes: `[data-reveal]`, `[data-accent]`, `.process-stage`, and `.tilt-card` elements from Task 2.
+- Produces: `setActiveStage(stageIndex: number): void`, intersection-driven `.is-visible`, `.is-active`, and `data-scroll-progress` states.
 
-- [ ] **Step 1: Write failing pure-function tests**
+- [ ] **Step 1: Add failing motion and accessibility tests**
 
 ```js
-import test from "node:test";
-import assert from "node:assert/strict";
-import { clamp, stageForProgress, motionAllowed } from "../public/motion-core.mjs";
-
-test("stageForProgress maps scroll progress to five stable stages", () => {
-  assert.deepEqual([0, 0.24, 0.25, 0.5, 0.75, 1].map(stageForProgress), [0, 0, 1, 2, 3, 4]);
+test("motion is progressive and respects reduced-motion preferences", () => {
+  const css = readFileSync(new URL("../site/styles.css", import.meta.url), "utf8");
+  const js = readFileSync(new URL("../site/script.js", import.meta.url), "utf8");
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.match(js, /IntersectionObserver/);
+  assert.match(js, /matchMedia\(["']\(prefers-reduced-motion: reduce\)["']\)/);
 });
 
-test("motion is disabled for reduced motion or coarse pointers", () => {
-  assert.equal(motionAllowed(false, false), true);
-  assert.equal(motionAllowed(true, false), false);
-  assert.equal(motionAllowed(false, true), false);
-});
-
-test("clamp bounds values", () => {
-  assert.equal(clamp(-1, 0, 1), 0);
-  assert.equal(clamp(2, 0, 1), 1);
+test("interactive visuals are excluded from keyboard order", () => {
+  const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
+  assert.match(html, /aria-hidden=["']true["']/);
+  assert.match(html, /aria-label=["']Primary["']/);
 });
 ```
 
-- [ ] **Step 2: Run the motion tests and confirm the missing-module failure**
+- [ ] **Step 2: Run the tests and verify they fail**
 
-Run: `node --test tests/motion-core.test.mjs`
-Expected: FAIL with module-not-found for `public/motion-core.mjs`.
+Run: `node --test tests/site.test.mjs`
 
-- [ ] **Step 3: Implement the pure motion helpers**
+Expected: FAIL on missing observer, reduced-motion query, and accessibility attributes.
 
-```js
-export const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+- [ ] **Step 3: Implement reveal and process-stage state**
 
-export function stageForProgress(progress) {
-  const bounded = clamp(progress, 0, 1);
-  if (bounded >= 1) return 4;
-  return Math.floor(bounded * 4);
-}
+Create one `IntersectionObserver` for reveal nodes and another for `.process-stage` nodes. `setActiveStage(stageIndex)` updates the process canvas data attribute and active navigation marker. Use CSS transforms and clip paths for entrances; never animate content visibility in a way that prevents reading.
 
-export const motionAllowed = (reducedMotion, coarsePointer) => !reducedMotion && !coarsePointer;
-```
+- [ ] **Step 4: Implement restrained pointer effects**
 
-- [ ] **Step 4: Run the motion tests and confirm they pass**
+Enable card tilt and magnetic button offsets only when `(hover: hover) and (pointer: fine)` matches. Reset transforms on pointer leave. Clamp card rotation to `4deg` and button displacement to `8px`.
 
-Run: `node --test tests/motion-core.test.mjs`
-Expected: PASS for all three motion-core behaviors.
+- [ ] **Step 5: Implement reduced motion**
 
-- [ ] **Step 5: Add progressive enhancement**
+When reduced motion is requested, do not attach pointer handlers, mark all reveal nodes visible immediately, and use CSS to reduce all animation and transition durations to `0.01ms` while preserving discrete accent colors.
 
-Use `IntersectionObserver` for reveal states, scroll progress for the process stage and header signal, pointer transforms for tilt cards only when `motionAllowed` returns true, and a keyboard-accessible mobile menu with synchronized `aria-expanded`. Ensure the document remains complete with JavaScript disabled.
+- [ ] **Step 6: Run the tests**
 
-- [ ] **Step 6: Run the complete test suite**
+Run: `node --test tests/site.test.mjs`
 
-Run: `npm test`
-Expected: PASS for all structure and motion tests.
+Expected: PASS.
 
-- [ ] **Step 7: Commit the motion system**
+- [ ] **Step 7: Commit motion behavior**
 
 ```bash
-git add tests/motion-core.test.mjs public/motion-core.mjs public/script.js public/index.html public/styles.css
-git commit -m "feat: add progressive scroll interactions"
+git add tests/site.test.mjs site/index.html site/styles.css site/script.js
+git commit -m "feat: add accessible staged motion"
 ```
 
-### Task 4: Original Merchandise Imagery
+### Task 4: Generate and integrate the merchandise imagery
 
 **Files:**
-- Create: `public/assets/creator-apparel.png`
-- Create: `public/assets/fulfillment-studio.png`
-- Create: `public/assets/complete-collection.png`
-- Modify: `tests/site-structure.test.mjs`
-- Modify: `public/index.html`
-- Modify: `public/styles.css`
+- Create: `site/assets/night-shift.webp`
+- Create: `site/assets/fulfillment.webp`
+- Create: `site/assets/studio-pack.webp`
+- Modify: `tests/site.test.mjs`
+- Modify: `site/index.html`
+- Modify: `site/styles.css`
 
 **Interfaces:**
-- Consumes: the three `[data-project]` cards created in Task 2.
-- Produces: three locally served images with explicit dimensions and descriptive alternative text.
+- Consumes: the three figure shells in `#work`.
+- Produces: three local `1600×1200` WebP editorial campaign assets referenced by relative URLs.
 
 - [ ] **Step 1: Add a failing local-image contract test**
 
 ```js
-test("all three example projects use local descriptive images", async () => {
-  const html = await readFile(new URL("../public/index.html", import.meta.url), "utf8");
-  for (const name of ["creator-apparel.png", "fulfillment-studio.png", "complete-collection.png"]) {
-    assert.match(html, new RegExp(`/assets/${name}`));
-    await readFile(new URL(`../public/assets/${name}`, import.meta.url));
+import { existsSync } from "node:fs";
+
+test("all three merchandise campaign images are local and present", () => {
+  for (const name of ["night-shift.webp", "fulfillment.webp", "studio-pack.webp"]) {
+    assert.equal(existsSync(new URL(`../site/assets/${name}`, import.meta.url)), true, name);
   }
-  assert.equal((html.match(/<img[^>]+alt=["'][^"']{12,}["']/g) ?? []).length, 3);
 });
 ```
 
-- [ ] **Step 2: Run the focused test and confirm missing-asset failure**
+- [ ] **Step 2: Run the test and verify it fails**
 
-Run: `node --test --test-name-pattern="local descriptive images" tests/site-structure.test.mjs`
-Expected: FAIL because the three generated image files do not exist.
+Run: `node --test tests/site.test.mjs`
 
-- [ ] **Step 3: Generate one coherent three-image editorial campaign set**
+Expected: FAIL listing the three missing image files.
 
-Generate: (1) monochrome-forward heavyweight hoodie and tee on a studio set with a restrained acid-green accent, (2) colorful premium fulfillment workbench with folded apparel and recyclable mailers, and (3) a maximalist complete creator collection with hoodie, cap, tee, and accessories. Use no logos, people, or baked-in text.
+- [ ] **Step 3: Generate one coherent image set**
 
-- [ ] **Step 4: Integrate image paths, dimensions, alt text, and responsive framing**
+Use a single image-generation request for three separate `4:3` editorial product photographs: a black heavyweight creator hoodie on a chrome studio chair with green rim light; folded apparel and recyclable shipping packaging on a violet/orange fulfillment table; and a coordinated hoodie, cap, and tee collection on a cyan-lit modular set. Require photoreal materials, premium campaign lighting, no people, no readable text, no logos, and consistent art direction.
 
-Use `loading="lazy"` for below-the-fold assets, fixed aspect-ratio containers, and `object-fit: cover` so layout does not jump while assets load.
+- [ ] **Step 4: Inspect and save the generated assets**
 
-- [ ] **Step 5: Run the complete test suite**
+Confirm that each image is merchandise-focused, contains no visible brand mark or malformed text, and shares the same lighting language. Save the selected files with the exact filenames in the interface block.
 
-Run: `npm test`
-Expected: PASS, including all local image checks.
+- [ ] **Step 5: Integrate responsive image markup**
 
-- [ ] **Step 6: Commit the imagery**
+Use explicit `width="1600" height="1200"`, descriptive alt text, `loading="lazy"` for below-fold images, and `object-fit: cover`. Do not apply image text overlays that reduce product visibility.
+
+- [ ] **Step 6: Run the tests**
+
+Run: `node --test tests/site.test.mjs`
+
+Expected: PASS.
+
+- [ ] **Step 7: Commit imagery**
 
 ```bash
-git add public/assets tests/site-structure.test.mjs public/index.html public/styles.css
-git commit -m "feat: add original merchandise imagery"
+git add site/assets site/index.html site/styles.css tests/site.test.mjs
+git commit -m "feat: add Creator Supply campaign imagery"
 ```
 
-### Task 5: Deployment and Final Verification
+### Task 5: Package the site for Docker and Nginx
 
 **Files:**
-- Modify: `tests/site-structure.test.mjs`
-- Modify: `README.md`
-- Modify: `Dockerfile`
-- Modify: `nginx.conf`
+- Create: `Dockerfile`
+- Create: `.dockerignore`
+- Create: `nginx.conf`
+- Create: `scripts/check-site.mjs`
+- Modify: `package.json`
+- Modify: `tests/site.test.mjs`
+- Create: `README.md`
 
 **Interfaces:**
-- Consumes: the complete `public/` site.
-- Produces: an Nginx container exposing port `80`, a `/healthz` endpoint returning `200`, and concise local run instructions.
+- Consumes: the complete `site/` static directory.
+- Produces: container image command `docker build -t creator-supply .` and runtime command `docker run --rm -p 8080:8080 creator-supply`.
 
-- [ ] **Step 1: Add failing deployment-contract checks**
+- [ ] **Step 1: Add failing delivery tests**
 
 ```js
-test("container configuration exposes nginx and a health endpoint", async () => {
-  const dockerfile = await readFile(new URL("../Dockerfile", import.meta.url), "utf8");
-  const nginx = await readFile(new URL("../nginx.conf", import.meta.url), "utf8");
-  assert.match(dockerfile, /FROM nginx:1\.27-alpine/);
-  assert.match(dockerfile, /EXPOSE 80/);
-  assert.match(nginx, /location = \/healthz/);
-  assert.match(nginx, /try_files \$uri \$uri\/ \/index\.html/);
+test("the container serves the static site through unprivileged nginx", () => {
+  const dockerfile = readFileSync(new URL("../Dockerfile", import.meta.url), "utf8");
+  const nginx = readFileSync(new URL("../nginx.conf", import.meta.url), "utf8");
+  assert.match(dockerfile, /nginx:1\.27-alpine/);
+  assert.match(dockerfile, /COPY site\//);
+  assert.match(dockerfile, /EXPOSE 8080/);
+  assert.match(nginx, /listen\s+8080/);
+  assert.match(nginx, /try_files\s+\$uri\s+\$uri\/\s+\/index\.html/);
 });
 ```
 
-- [ ] **Step 2: Run the deployment test and confirm the health-contract failure**
+- [ ] **Step 2: Run the tests and verify they fail**
 
-Run: `node --test --test-name-pattern="container configuration" tests/site-structure.test.mjs`
-Expected: FAIL until the health endpoint and exact fallback contract are present.
+Run: `node --test tests/site.test.mjs`
 
-- [ ] **Step 3: Finish Docker/Nginx configuration and documentation**
+Expected: FAIL because Docker and Nginx files do not exist.
 
-Add the exact health response, security headers, immutable caching for hashed or image assets, no-cache behavior for HTML, and README commands for `docker build -t creator-supply .` and `docker run --rm -p 8080:80 creator-supply`.
+- [ ] **Step 3: Implement the runtime image**
 
-- [ ] **Step 4: Run fresh complete verification**
+Use `FROM nginx:1.27-alpine`, remove the default server configuration, copy `nginx.conf`, copy `site/` into `/usr/share/nginx/html/`, switch writable runtime paths to `/tmp`, and expose `8080`. Configure `gzip`, a restrictive baseline of security headers compatible with the local scripts/styles, immutable one-year caching for `/assets/`, and no-cache HTML delivery.
 
-Run: `npm test`
-Expected: all tests pass with zero failures.
+- [ ] **Step 4: Add deterministic static checks**
+
+Create `scripts/check-site.mjs` to parse local `href` and `src` values from `site/index.html`, assert every referenced local file exists, reject unfinished-work markers, and require non-empty HTML/CSS/JS files. Add `test` and `check` scripts to `package.json`.
+
+- [ ] **Step 5: Document operation**
+
+Document the two Docker commands above, direct static hosting from `site/`, the service scope, and the fact that the closing contact area intentionally awaits a real contact destination.
+
+- [ ] **Step 6: Run delivery checks**
+
+Run: `node --test tests/site.test.mjs`
+
+Run: `node scripts/check-site.mjs`
+
+Expected: both exit successfully.
+
+- [ ] **Step 7: Build and smoke-test when Docker is available**
 
 Run: `docker build -t creator-supply .`
-Expected: image build exits with code 0.
 
-Run: `docker run --rm -d --name creator-supply-check -p 8080:80 creator-supply`
-Expected: container ID is returned.
+Run: `docker run --rm -d --name creator-supply-test -p 8080:8080 creator-supply`
 
-Run: `Invoke-WebRequest -UseBasicParsing http://localhost:8080/healthz`
-Expected: status code 200 and body `ok`.
+Run: `node -e "fetch('http://127.0.0.1:8080').then(r=>{if(!r.ok)throw Error(String(r.status));return r.text()}).then(t=>{if(!t.includes('Creator Supply'))throw Error('missing brand')})"`
 
-Run: `Invoke-WebRequest -UseBasicParsing http://localhost:8080/`
-Expected: status code 200 and HTML containing `Creator Supply`.
+Run: `docker stop creator-supply-test`
 
-Run: `docker stop creator-supply-check`
-Expected: container stops cleanly.
+Expected: build succeeds, the page responds with HTTP 200 and contains the brand name, and the test container stops cleanly. If Docker is not installed on the execution host, report that exact limitation after all non-Docker checks pass.
 
-- [ ] **Step 5: Commit deployment completion**
+- [ ] **Step 8: Commit container delivery**
 
 ```bash
-git add tests/site-structure.test.mjs README.md Dockerfile nginx.conf
-git commit -m "docs: add Docker deployment workflow"
+git add Dockerfile .dockerignore nginx.conf scripts/check-site.mjs package.json tests/site.test.mjs README.md
+git commit -m "build: package landing page for nginx"
 ```
+
+### Task 6: Final verification
+
+**Files:**
+- Modify only if verification exposes a defect.
+
+**Interfaces:**
+- Consumes: the complete site and delivery configuration.
+- Produces: verification evidence for structure, asset integrity, responsive safeguards, reduced motion, and container readiness.
+
+- [ ] **Step 1: Run the full test suite**
+
+Run: `node --test tests/site.test.mjs`
+
+Expected: all tests pass with zero failures.
+
+- [ ] **Step 2: Run asset and completeness validation**
+
+Run: `node scripts/check-site.mjs`
+
+Expected: reports successful validation and exits `0`.
+
+- [ ] **Step 3: Check repository whitespace and state**
+
+Run: `git diff --check`
+
+Run: `git status --short`
+
+Expected: no whitespace errors; only intended uncommitted verification fixes, if any.
+
+- [ ] **Step 4: Verify the final commit history**
+
+Run: `git log --oneline -6`
+
+Expected: design, shell, narrative, motion, imagery, and container-delivery commits are present.
