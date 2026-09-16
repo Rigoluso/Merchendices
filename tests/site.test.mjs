@@ -38,3 +38,19 @@ test("the stylesheet defines staged accent colors without a page gradient", () =
 
   assert.doesNotMatch(css, /body[^}]*linear-gradient/is);
 });
+
+test("motion is progressive and respects reduced-motion preferences", () => {
+  const css = readFileSync(new URL("../site/styles.css", import.meta.url), "utf8");
+  const js = readFileSync(new URL("../site/script.js", import.meta.url), "utf8");
+
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.match(js, /IntersectionObserver/);
+  assert.match(js, /matchMedia\(["']\(prefers-reduced-motion: reduce\)["']\)/);
+});
+
+test("interactive visuals are excluded from keyboard order", () => {
+  const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
+
+  assert.match(html, /aria-hidden=["']true["']/);
+  assert.match(html, /aria-label=["']Primary["']/);
+});
