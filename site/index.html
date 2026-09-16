@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Creator Supply designs, builds, produces, and ships creator merchandise with no setup fee." />
+    <meta name="description" content="Creator Supply designs, builds, produces, and ships distinctive creator merchandise with no setup fee." />
+    <meta name="theme-color" content="#050505" />
     <title>Creator Supply — Merch, made for your channel</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
@@ -11,37 +12,93 @@
   </head>
   <body id="top">
     <a class="skip-link" href="#main">Skip to content</a>
+    <div class="scroll-meter" aria-hidden="true"><span></span></div>
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="Creator Supply home">Creator Supply</a>
+      <a class="brand" href="#top" aria-label="Creator Supply home">
+        <span class="brand-mark" aria-hidden="true">CS</span><span>Creator Supply</span>
+      </a>
       <nav aria-label="Primary">
-        <a href="#services">What we do</a>
-        <a href="#work">Examples</a>
-        <a href="#contact">Start a drop</a>
+        <a href="#services">What we do</a><a href="#process">Our process</a><a href="#work">Examples</a>
       </nav>
+      <a class="button button-small button-light magnetic" href="#contact">Start a drop <span aria-hidden="true">↗</span></a>
     </header>
+
     <main id="main">
       <section class="hero" aria-labelledby="hero-title">
-        <p>Merch infrastructure for YouTubers</p>
-        <h1 id="hero-title">Your channel. Your world. Your merch.</h1>
-        <p>We design the collection, build the storefront, produce every piece, and ship every order.</p>
-        <a href="#services">See how it works</a>
+        <div class="hero-grid" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <div class="eyebrow" data-reveal><span class="signal-dot"></span><span>Full-service merch for YouTubers</span><span class="eyebrow-index">01—06</span></div>
+          <h1 id="hero-title" data-reveal>Your channel.<br />Your world.<br /><span>Your merch.</span></h1>
+          <div class="hero-bottom" data-reveal>
+            <p>We turn your channel into a collection people actually want—then build the store, make every piece, and ship every order.</p>
+            <a class="button button-outline magnetic" href="#services">See the system <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+        <div class="hero-deck" aria-label="The Creator Supply service stack" data-reveal>
+          <article class="deck-card deck-card-back"><span class="card-number">03</span><span class="card-label">Ship worldwide</span><span class="card-glyph" aria-hidden="true">↗</span></article>
+          <article class="deck-card deck-card-mid"><span class="card-number">02</span><span class="card-label">Launch the store</span><span class="card-glyph" aria-hidden="true">◇</span></article>
+          <article class="deck-card deck-card-front">
+            <div class="deck-card-top"><span class="card-number">01</span><span>CREATOR EDITION</span></div>
+            <div class="type-orbit" aria-hidden="true"><span>YOUR IDEAS • OUR INFRASTRUCTURE •</span><strong>CS</strong></div>
+            <div class="deck-card-bottom"><span class="card-label">Design the drop</span><span class="card-glyph" aria-hidden="true">✦</span></div>
+          </article>
+        </div>
+        <div class="hero-marquee" aria-hidden="true"><div>NO SETUP FEE — NO INVENTORY HEADACHE — NO COOKIE-CUTTER MERCH — &nbsp;</div><div>NO SETUP FEE — NO INVENTORY HEADACHE — NO COOKIE-CUTTER MERCH — &nbsp;</div></div>
       </section>
-      <section id="services" aria-labelledby="services-title">
-        <h2 id="services-title">Everything behind the drop</h2>
+
+      <section class="services section-shell" id="services" aria-labelledby="services-title" data-accent="green">
+        <div class="section-heading" data-reveal>
+          <p class="section-kicker"><span>02</span> What we do</p><h2 id="services-title">Everything behind<br />the drop.</h2>
+          <p class="section-intro">One team from the first sketch to the last-mile delivery. You stay focused on the next upload.</p>
+        </div>
+        <div class="service-grid">
+          <article class="service-card tilt-card" data-reveal><div class="service-icon" aria-hidden="true">✦</div><p class="service-index">01 / CREATIVE</p><h3>We design it.</h3><p>Graphics, garments, and details built from your channel’s visual language—not a template with your logo pasted on.</p><span class="card-action" aria-hidden="true">↗</span></article>
+          <article class="service-card service-card-invert tilt-card" data-reveal><div class="service-icon" aria-hidden="true">▦</div><p class="service-index">02 / DIGITAL</p><h3>We build the store.</h3><p>A storefront that feels like part of your world, designed and deployed without a setup bill.</p><span class="card-action" aria-hidden="true">↗</span></article>
+          <article class="service-card tilt-card" data-reveal><div class="service-icon" aria-hidden="true">◫</div><p class="service-index">03 / PRODUCTION</p><h3>We make every piece.</h3><p>Quality production and careful finishing, with inventory handled behind the scenes.</p><span class="card-action" aria-hidden="true">↗</span></article>
+          <article class="service-card tilt-card" data-reveal><div class="service-icon" aria-hidden="true">⌁</div><p class="service-index">04 / FULFILLMENT</p><h3>We ship every order.</h3><p>Packing, tracking, support, and delivery handled from checkout to your viewer’s door.</p><span class="card-action" aria-hidden="true">↗</span></article>
+        </div>
+        <div class="ticker ticker-green" aria-hidden="true"><span>DESIGN → BUILD → PRODUCE → PACK → SHIP →</span><span>DESIGN → BUILD → PRODUCE → PACK → SHIP →</span></div>
       </section>
-      <section id="process" aria-labelledby="process-title">
-        <h2 id="process-title">From channel to collection</h2>
+
+      <section class="process section-shell" id="process" aria-labelledby="process-title" data-accent="violet">
+        <div class="process-head" data-reveal><p class="section-kicker"><span>03</span> The process</p><h2 id="process-title">From channel<br />to collection.</h2></div>
+        <div class="process-layout">
+          <div class="process-visual" data-stage="0" aria-hidden="true"><div class="process-noise"></div><div class="process-stage-number">01</div><div class="process-symbol">◎</div><p>Built around your audience.<br />Never around a blank.</p><div class="process-progress"><i></i><i></i><i></i><i></i></div></div>
+          <div class="process-stages">
+            <article class="process-stage is-active" data-stage-index="0" data-reveal><p>01 / LISTEN</p><h3>We learn your world.</h3><p>Visual references, recurring jokes, audience energy, and what your viewers already love about the channel.</p></article>
+            <article class="process-stage" data-stage-index="1" data-reveal><p>02 / DESIGN</p><h3>We make the collection.</h3><p>A focused range with a clear concept, strong materials, and details worth discovering up close.</p></article>
+            <article class="process-stage" data-stage-index="2" data-reveal><p>03 / LAUNCH</p><h3>We build your store.</h3><p>A channel-matched shopping experience, prepared for launch and easy for your viewers to use.</p></article>
+            <article class="process-stage" data-stage-index="3" data-reveal><p>04 / DELIVER</p><h3>We run the operation.</h3><p>Production, packing, shipping, and the day-to-day work that keeps every order moving.</p></article>
+          </div>
+        </div>
       </section>
-      <section id="work" aria-labelledby="work-title">
-        <h2 id="work-title">Merch people want to wear</h2>
+
+      <section class="work section-shell" id="work" aria-labelledby="work-title" data-accent="orange">
+        <div class="work-head" data-reveal><p class="section-kicker"><span>04</span> Example direction</p><h2 id="work-title">Merch people<br />want to wear.</h2><p>Not client work. A glimpse of the kinds of product worlds we can build around a creator’s point of view.</p></div>
+        <div class="work-grid">
+          <figure class="work-card work-card-wide tilt-card" data-reveal><div class="work-media work-media-one" aria-hidden="true"><span>Image arriving</span></div><figcaption><div><span>01</span><h3>Night Shift Hoodie</h3></div><p>Heavyweight / tonal embroidery / custom label</p></figcaption></figure>
+          <figure class="work-card work-card-tall tilt-card" data-reveal><div class="work-media work-media-two" aria-hidden="true"><span>Image arriving</span></div><figcaption><div><span>02</span><h3>Handled with care</h3></div><p>Packaging / inserts / fulfillment</p></figcaption></figure>
+          <figure class="work-card work-card-square tilt-card" data-reveal><div class="work-media work-media-three" aria-hidden="true"><span>Image arriving</span></div><figcaption><div><span>03</span><h3>Studio Pack</h3></div><p>Hoodie / cap / heavyweight tee</p></figcaption></figure>
+        </div>
       </section>
-      <section id="model" aria-labelledby="model-title">
-        <h2 id="model-title">You create. We operate.</h2>
+
+      <section class="model section-shell" id="model" aria-labelledby="model-title" data-accent="cyan">
+        <div class="model-head" data-reveal><p class="section-kicker"><span>05</span> The model</p><h2 id="model-title">You create.<br /><span>We operate.</span></h2></div>
+        <div class="split-model">
+          <article class="model-card creator-side" data-reveal><div class="model-label"><span>YOUR SIDE</span><span aria-hidden="true">●</span></div><h3>Make the content only you can make.</h3><ul><li><span>01</span>Bring the channel</li><li><span>02</span>Shape the creative direction</li><li><span>03</span>Share the finished drop</li></ul></article>
+          <div class="model-join" aria-hidden="true">+</div>
+          <article class="model-card supply-side" data-reveal><div class="model-label"><span>OUR SIDE</span><span aria-hidden="true">✦</span></div><h3>Run everything the merchandise needs.</h3><ul><li><span>01</span>Design and storefront</li><li><span>02</span>Production and inventory</li><li><span>03</span>Shipping and support</li></ul></article>
+        </div>
+        <div class="zero-fee" data-reveal><span class="zero">0</span><div><strong>Zero setup fee.</strong><p>Your store and collection launch without an upfront setup bill. You earn when the merch sells.</p></div><span class="asterisk" aria-hidden="true">✳</span></div>
       </section>
-      <section id="contact" aria-labelledby="contact-title">
-        <h2 id="contact-title">Ready when your channel is.</h2>
+
+      <section class="closing section-shell" id="contact" aria-labelledby="contact-title" data-accent="full">
+        <div class="closing-bands" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="closing-copy" data-reveal><p class="section-kicker"><span>06</span> Your next drop</p><h2 id="contact-title">Your audience<br />is already there.</h2><p>Let’s build the thing they’ll want to take with them.</p><a class="button button-dark magnetic" href="#top">Plan your drop <span aria-hidden="true">↗</span></a><small>Contact destination ready to connect when your preferred channel is supplied.</small></div>
+        <div class="closing-stamp" aria-hidden="true"><span>CREATOR SUPPLY • CREATOR SUPPLY •</span><strong>CS</strong></div>
       </section>
     </main>
-    <footer>Creator Supply — design, storefront, production, and shipping.</footer>
+
+    <footer class="site-footer"><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">CS</span><span>Creator Supply</span></a><p>Design / storefront / production / shipping</p><a href="#top">Back to top ↑</a></footer>
   </body>
 </html>
