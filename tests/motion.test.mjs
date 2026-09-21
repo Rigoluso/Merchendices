@@ -34,22 +34,22 @@ test("stagger delays stay rhythmic without growing forever", () => {
   assert.equal(motion.staggerDelay(-4), 0);
 });
 
-test("motion profile disables intensive effects for reduced motion", () => {
+test("full motion is the default unless the visitor explicitly reduces it", () => {
   assert.equal(typeof motion?.motionProfile, "function");
 
-  assert.deepEqual(motion.motionProfile({ reduced: true, finePointer: true }), {
+  assert.deepEqual(motion.motionProfile({ explicitReduced: false, finePointer: true }), {
+    animate: true,
+    pointer: true,
+    transitions: true,
+  });
+  assert.deepEqual(motion.motionProfile({ explicitReduced: true, finePointer: true }), {
     animate: false,
     pointer: false,
     transitions: false,
   });
-  assert.deepEqual(motion.motionProfile({ reduced: false, finePointer: false }), {
+  assert.deepEqual(motion.motionProfile({ explicitReduced: false, finePointer: false }), {
     animate: true,
     pointer: false,
-    transitions: true,
-  });
-  assert.deepEqual(motion.motionProfile({ reduced: true, finePointer: true, force: true }), {
-    animate: true,
-    pointer: true,
     transitions: true,
   });
 });
@@ -108,15 +108,23 @@ test("motion frame guard invalidates queued card work after pointer exit", () =>
   assert.equal(guard.isCurrent(nextFrame), true);
 });
 
-test("forced motion stays enabled across internal page transitions", () => {
+test("only an explicit reduced-motion choice is carried across internal pages", () => {
   assert.equal(typeof motion?.withMotionPreference, "function");
 
   assert.equal(
-    motion.withMotionPreference({ href: "/services/", base: "http://localhost:8080/", force: true }).href,
-    "http://localhost:8080/services/?motion=full",
-  );
-  assert.equal(
-    motion.withMotionPreference({ href: "/services/", base: "http://localhost:8080/", force: false }).href,
+    motion.withMotionPreference({ href: "/services/", base: "http://localhost:8080/", explicitReduced: false }).href,
     "http://localhost:8080/services/",
   );
+  assert.equal(
+    motion.withMotionPreference({ href: "/services/", base: "http://localhost:8080/", explicitReduced: true }).href,
+    "http://localhost:8080/services/?motion=reduced",
+  );
+});
+
+test("scroll reveals content reached or skipped before the current viewport", () => {
+  assert.equal(typeof motion?.shouldRevealOnScroll, "function");
+
+  assert.equal(motion.shouldRevealOnScroll({ top: 860, viewportHeight: 800, preload: 120 }), true);
+  assert.equal(motion.shouldRevealOnScroll({ top: -1400, viewportHeight: 800, preload: 120 }), true);
+  assert.equal(motion.shouldRevealOnScroll({ top: 1000, viewportHeight: 800, preload: 120 }), false);
 });

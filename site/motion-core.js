@@ -18,8 +18,8 @@ export function staggerDelay(index, step = 70, maximum = 560) {
   return clamp(Math.max(0, index) * step, 0, maximum);
 }
 
-export function motionProfile({ reduced, finePointer, force = false }) {
-  const animate = force || !reduced;
+export function motionProfile({ explicitReduced = false, finePointer }) {
+  const animate = !explicitReduced;
   return {
     animate,
     pointer: animate && finePointer,
@@ -80,8 +80,13 @@ export function createMotionFrameGuard() {
   };
 }
 
-export function withMotionPreference({ href, base, force }) {
+export function withMotionPreference({ href, base, explicitReduced = false }) {
   const destination = new URL(href, base);
-  if (force) destination.searchParams.set("motion", "full");
+  destination.searchParams.delete("motion");
+  if (explicitReduced) destination.searchParams.set("motion", "reduced");
   return destination;
+}
+
+export function shouldRevealOnScroll({ top, viewportHeight, preload = 160 }) {
+  return top <= viewportHeight + preload;
 }

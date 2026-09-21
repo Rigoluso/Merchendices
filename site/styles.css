@@ -342,16 +342,18 @@ body:has(a:hover, button:hover) .cursor-aura { width: 18rem; opacity: .7; }
 .motion-enabled .button:hover span { transform: translate(.2rem,-.2rem) rotate(-10deg); }
 
 .kinetic-word { display: inline-block; }
-.motion-enabled .kinetic-word { opacity: 0; filter: blur(.45rem); clip-path: inset(0 0 100% 0); transform: translate3d(0,1.05em,0) rotate(4deg); transition: opacity .65s ease, filter .75s ease, clip-path .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--word-index, 0) * 48ms + var(--reveal-delay, 0ms)); }
+.motion-enabled .kinetic-word { opacity: 1; filter: none; clip-path: none; transform: translate3d(0,.45em,0) rotate(2deg); transition: transform .8s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--word-index, 0) * 32ms + var(--reveal-delay, 0ms)); }
 .motion-enabled .motion-heading { word-spacing: .08em; }
 .motion-enabled .motion-heading .kinetic-word { transform-origin: 50% 80%; will-change: transform; transition: opacity .65s ease, filter .75s ease, clip-path .8s cubic-bezier(.2,.8,.2,1), transform .14s linear; }
 .motion-enabled .is-visible .kinetic-word, .motion-enabled [data-reveal].is-visible.kinetic-word { opacity: 1; filter: blur(0); clip-path: inset(0); transform: translate3d(var(--word-scroll-x,0px),var(--word-scroll-y,0px),0) rotate(var(--word-rotate,0deg)) skewX(var(--word-skew,0deg)) scale(var(--word-scale-x,1),var(--word-scale-y,1)); }
 .motion-enabled .page-hero .is-visible .kinetic-word, .motion-enabled .store-showcase.is-visible .kinetic-word, .motion-enabled .motion-section-active .kinetic-word { opacity: 1; filter: blur(0); clip-path: inset(0); transform: translate3d(var(--word-scroll-x,0px),var(--word-scroll-y,0px),0) rotate(var(--word-rotate,0deg)) skewX(var(--word-skew,0deg)) scale(var(--word-scale-x,1),var(--word-scale-y,1)); }
 
-.motion-enabled [data-reveal] { filter: blur(.35rem); clip-path: inset(0 0 8% 0); transform: translate3d(0,3rem,0) scale(.985); transition: opacity .8s ease var(--reveal-delay,0ms), filter .9s ease var(--reveal-delay,0ms), clip-path 1s cubic-bezier(.2,.8,.2,1) var(--reveal-delay,0ms), transform 1s cubic-bezier(.2,.8,.2,1) var(--reveal-delay,0ms); }
+.motion-enabled [data-reveal] { opacity: 1; filter: none; clip-path: none; transform: translate3d(0,1.25rem,0) scale(.995); transition: transform .72s cubic-bezier(.2,.8,.2,1) var(--reveal-delay,0ms); }
 .motion-enabled [data-reveal].is-visible { filter: blur(0); clip-path: inset(0); transform: translate3d(0,0,0) scale(1); }
 
-.motion-enabled .section-shell[data-accent]:not(.closing)::after, .motion-enabled .store-showcase::after { content: ""; position: absolute; z-index: 8; inset: -8% -15%; pointer-events: none; background: var(--green); transform: translate3d(-115%,0,0) skewX(-9deg); }
+.motion-enabled .section-shell[data-accent]:not(.closing), .motion-enabled .store-showcase { isolation: isolate; }
+.motion-enabled .section-shell[data-accent]:not(.closing) > *, .motion-enabled .store-showcase > * { position: relative; z-index: 1; }
+.motion-enabled .section-shell[data-accent]:not(.closing)::after, .motion-enabled .store-showcase::after { content: ""; position: absolute; z-index: 0; inset: -8% -15%; pointer-events: none; background: var(--green); transform: translate3d(-115%,0,0) skewX(-9deg); }
 .motion-enabled .section-shell[data-accent="violet"]::after, .motion-enabled .store-showcase--orbit::after { background: var(--violet); }
 .motion-enabled .section-shell[data-accent="orange"]::after, .motion-enabled .store-showcase--level::after { background: var(--orange); }
 .motion-enabled .section-shell[data-accent="cyan"]::after { background: var(--cyan); }
@@ -402,7 +404,7 @@ body:has(a:hover, button:hover) .cursor-aura { width: 18rem; opacity: .7; }
 .motion-enabled .operations-map i:nth-of-type(4) { animation-delay: 1.05s; }
 
 .motion-enabled .model-card { transition: transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s ease; }
-.motion-enabled .model-card:hover { transform: translateY(-.75rem) rotate(.5deg); box-shadow: 0 1.5rem 3rem rgba(0,0,0,.18); }
+.motion-enabled .model-card:hover { box-shadow: 0 1.5rem 3rem rgba(0,0,0,.18); }
 .motion-enabled .model-card li { transition: padding-left .3s ease, background .3s ease; }
 .motion-enabled .model-card li:hover { padding-left: .8rem; background: rgba(255,255,255,.08); }
 .motion-enabled .model-join { animation: join-spin 5s cubic-bezier(.5,0,.5,1) infinite; }
@@ -458,8 +460,7 @@ body:has(a:hover, button:hover) .cursor-aura { width: 18rem; opacity: .7; }
 .motion-enabled .motion-card.is-motion-hovered {
   --card-lift: 14px;
   --card-scale: 1.025;
-  --card-depth: 28px;
-  z-index: 20;
+  --card-depth: 16px;
   border-color: rgba(255,255,255,.55);
   box-shadow: 0 2.2rem 5rem rgba(0,0,0,.38), 0 0 0 1px rgba(255,255,255,.08);
   transition: transform .085s linear, box-shadow .25s ease, border-color .25s ease;

@@ -4,6 +4,7 @@ import {
   deriveScrollMotion,
   deriveTextMotion,
   motionProfile,
+  shouldRevealOnScroll,
   settleMotion,
   staggerDelay,
   withMotionPreference,
@@ -13,8 +14,8 @@ document.documentElement.classList.add("js");
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-const forceMotion = new URLSearchParams(window.location.search).get("motion") === "full";
-let profile = motionProfile({ reduced: reduceMotion.matches, finePointer: finePointer.matches, force: forceMotion });
+const explicitReduced = new URLSearchParams(window.location.search).get("motion") === "reduced";
+let profile = motionProfile({ explicitReduced, finePointer: finePointer.matches });
 
 const revealNodes = [...document.querySelectorAll("[data-reveal]")];
 const closingSection = document.querySelector(".closing");
@@ -25,7 +26,8 @@ const processBars = [...document.querySelectorAll(".process-progress i")];
 const scrollMeter = document.querySelector(".scroll-meter span");
 const root = document.documentElement;
 const kineticHeadings = [];
-if (forceMotion) root.classList.add("force-motion");
+const resetPointerCards = [];
+if (profile.animate) root.classList.add("force-motion");
 
 function installMotionLayer() {
   if (!profile.animate) return;
@@ -100,6 +102,21 @@ function showEverything() {
   setActiveStage(0);
 }
 
+function revealTraversedContent() {
+  revealNodes.forEach((node) => {
+    if (node.classList.contains("is-visible")) return;
+    if (shouldRevealOnScroll({ top: node.getBoundingClientRect().top, viewportHeight: window.innerHeight })) {
+      node.classList.add("is-visible");
+    }
+  });
+
+  if (closingSection && !closingSection.classList.contains("is-visible")) {
+    if (shouldRevealOnScroll({ top: closingSection.getBoundingClientRect().top, viewportHeight: window.innerHeight })) {
+      closingSection.classList.add("is-visible");
+    }
+  }
+}
+
 function setupObservers() {
   const revealObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
@@ -107,7 +124,7 @@ function setupObservers() {
       entry.target.classList.add("is-visible");
       observer.unobserve(entry.target);
     });
-  }, { threshold: 0.12, rootMargin: "0px 0px -5%" });
+  }, { threshold: 0.02, rootMargin: "0px 0px 12%" });
 
   revealNodes.forEach((node) => revealObserver.observe(node));
   if (closingSection) revealObserver.observe(closingSection);
@@ -117,7 +134,7 @@ function setupObservers() {
       if (!entry.isIntersecting || entry.target.classList.contains("motion-section-active")) return;
       entry.target.classList.add("motion-section-active");
     });
-  }, { threshold: 0.16 });
+  }, { threshold: 0.04, rootMargin: "0px 0px 10%" });
   document.querySelectorAll("main > section, .store-showcase").forEach((section) => sectionObserver.observe(section));
 
   const stageObserver = new IntersectionObserver((entries) => {
@@ -198,6 +215,7 @@ function setupPointerMotion() {
       card.style.setProperty("--spot-x", "50%");
       card.style.setProperty("--spot-y", "50%");
     };
+    resetPointerCards.push(resetCard);
     card.addEventListener("pointerleave", resetCard);
     card.addEventListener("pointercancel", resetCard);
   });
@@ -225,7 +243,7 @@ function setupPageTransitions() {
     let destination = new URL(anchor.href, window.location.href);
     if (destination.origin !== window.location.origin) return;
     if (destination.pathname === window.location.pathname && destination.hash) return;
-    destination = withMotionPreference({ href: destination.href, base: window.location.href, force: forceMotion });
+    destination = withMotionPreference({ href: destination.href, base: window.location.href, explicitReduced });
 
     event.preventDefault();
     curtain?.classList.add("is-closing");
@@ -258,6 +276,7 @@ function updateKineticText() {
 }
 
 function updateMotionFrame() {
+  revealTraversedContent();
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
   const state = deriveScrollMotion({ scrollY: window.scrollY, previousY, maxScroll });
   previousY = window.scrollY;
@@ -301,19 +320,20 @@ if (profile.animate) {
   showEverything();
 }
 
-window.addEventListener("scroll", requestMotionFrame, { passive: true });
-window.addEventListener("resize", requestMotionFrame, { passive: true });
+function resetCardsAndRequestMotion() {
+  resetPointerCards.forEach((resetCard) => resetCard());
+  requestMotionFrame();
+}
+
+window.addEventListener("scroll", resetCardsAndRequestMotion, { passive: true });
+window.addEventListener("resize", resetCardsAndRequestMotion, { passive: true });
 window.addEventListener("pageshow", () => {
   document.body.classList.remove("is-leaving");
   document.querySelector(".page-curtain")?.classList.remove("is-closing");
 });
 
-reduceMotion.addEventListener("change", (event) => {
-  profile = motionProfile({ reduced: event.matches, finePointer: finePointer.matches, force: forceMotion });
-  if (event.matches && !forceMotion) {
-    root.classList.remove("motion-enabled");
-    showEverything();
-  }
+reduceMotion.addEventListener("change", () => {
+  profile = motionProfile({ explicitReduced, finePointer: finePointer.matches });
 });
 
 updateMotionFrame();
