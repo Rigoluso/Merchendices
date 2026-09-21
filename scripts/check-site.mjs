@@ -8,6 +8,7 @@ const requiredFiles = [
   "index.html",
   "styles.css",
   "script.js",
+  "motion-core.js",
   "contact.js",
   "cookie-consent.js",
   "logo.webp",
