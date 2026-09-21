@@ -47,4 +47,76 @@ test("motion profile disables intensive effects for reduced motion", () => {
     pointer: false,
     transitions: true,
   });
+  assert.deepEqual(motion.motionProfile({ reduced: true, finePointer: true, force: true }), {
+    animate: true,
+    pointer: true,
+    transitions: true,
+  });
+});
+
+test("card motion follows the pointer and stays inside safe tilt bounds", () => {
+  assert.equal(typeof motion?.deriveCardMotion, "function");
+
+  assert.deepEqual(
+    motion.deriveCardMotion({ pointerX: 150, pointerY: 100, left: 50, top: 50, width: 200, height: 100 }),
+    { rotateX: 0, rotateY: 0, translateX: 0, translateY: 0, innerX: 0, innerY: 0, shineX: 50, shineY: 50 },
+  );
+  assert.deepEqual(
+    motion.deriveCardMotion({ pointerX: 250, pointerY: 50, left: 50, top: 50, width: 200, height: 100 }),
+    { rotateX: 12, rotateY: 12, translateX: 10, translateY: -10, innerX: -4.5, innerY: 4.5, shineX: 100, shineY: 0 },
+  );
+  assert.deepEqual(
+    motion.deriveCardMotion({ pointerX: 500, pointerY: -100, left: 50, top: 50, width: 200, height: 100 }),
+    { rotateX: 12, rotateY: 12, translateX: 10, translateY: -10, innerX: -4.5, innerY: 4.5, shineX: 100, shineY: 0 },
+  );
+});
+
+test("text motion responds to scroll direction, speed, viewport position, and word rhythm", () => {
+  assert.equal(typeof motion?.deriveTextMotion, "function");
+
+  assert.deepEqual(
+    motion.deriveTextMotion({ viewportOffset: 0.5, direction: 1, intensity: 0.8, index: 0 }),
+    { x: 8.3, y: -0.8, skew: 4.5, rotate: 1.4, scaleX: 1.044, scaleY: 0.972 },
+  );
+  assert.deepEqual(
+    motion.deriveTextMotion({ viewportOffset: 0.5, direction: 1, intensity: 0.8, index: 1 }),
+    { x: -8.3, y: -0.8, skew: -3.5, rotate: -1.4, scaleX: 1.044, scaleY: 0.972 },
+  );
+  assert.deepEqual(
+    motion.deriveTextMotion({ viewportOffset: 0, direction: -5, intensity: 2, index: 0 }),
+    { x: -6, y: -4, skew: -5, rotate: -1.75, scaleX: 1.055, scaleY: 0.965 },
+  );
+});
+
+test("motion energy settles smoothly to rest", () => {
+  assert.equal(typeof motion?.settleMotion, "function");
+
+  assert.equal(motion.settleMotion(0.5), 0.41);
+  assert.equal(motion.settleMotion(-0.5), -0.41);
+  assert.equal(motion.settleMotion(0.005), 0);
+});
+
+test("motion frame guard invalidates queued card work after pointer exit", () => {
+  assert.equal(typeof motion?.createMotionFrameGuard, "function");
+
+  const guard = motion.createMotionFrameGuard();
+  const queuedFrame = guard.issue();
+  assert.equal(guard.isCurrent(queuedFrame), true);
+  guard.cancel();
+  assert.equal(guard.isCurrent(queuedFrame), false);
+  const nextFrame = guard.issue();
+  assert.equal(guard.isCurrent(nextFrame), true);
+});
+
+test("forced motion stays enabled across internal page transitions", () => {
+  assert.equal(typeof motion?.withMotionPreference, "function");
+
+  assert.equal(
+    motion.withMotionPreference({ href: "/services/", base: "http://localhost:8080/", force: true }).href,
+    "http://localhost:8080/services/?motion=full",
+  );
+  assert.equal(
+    motion.withMotionPreference({ href: "/services/", base: "http://localhost:8080/", force: false }).href,
+    "http://localhost:8080/services/",
+  );
 });

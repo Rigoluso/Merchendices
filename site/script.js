@@ -1,10 +1,20 @@
-import { deriveScrollMotion, motionProfile, staggerDelay } from "./motion-core.js";
+import {
+  createMotionFrameGuard,
+  deriveCardMotion,
+  deriveScrollMotion,
+  deriveTextMotion,
+  motionProfile,
+  settleMotion,
+  staggerDelay,
+  withMotionPreference,
+} from "./motion-core.js";
 
 document.documentElement.classList.add("js");
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-let profile = motionProfile({ reduced: reduceMotion.matches, finePointer: finePointer.matches });
+const forceMotion = new URLSearchParams(window.location.search).get("motion") === "full";
+let profile = motionProfile({ reduced: reduceMotion.matches, finePointer: finePointer.matches, force: forceMotion });
 
 const revealNodes = [...document.querySelectorAll("[data-reveal]")];
 const closingSection = document.querySelector(".closing");
@@ -14,6 +24,8 @@ const processNumber = document.querySelector(".process-stage-number");
 const processBars = [...document.querySelectorAll(".process-progress i")];
 const scrollMeter = document.querySelector(".scroll-meter span");
 const root = document.documentElement;
+const kineticHeadings = [];
+if (forceMotion) root.classList.add("force-motion");
 
 function installMotionLayer() {
   if (!profile.animate) return;
@@ -58,7 +70,11 @@ function splitKineticText(element) {
 }
 
 function prepareKineticType() {
-  document.querySelectorAll("h1, h2, .service-card h3, .process-stage h3, .work-card h3").forEach(splitKineticText);
+  document.querySelectorAll("h1, h2, .service-card h3, .process-stage h3, .work-card h3").forEach((heading) => {
+    splitKineticText(heading);
+    heading.classList.add("motion-heading");
+    kineticHeadings.push({ heading, words: [...heading.querySelectorAll(".kinetic-word")] });
+  });
   revealNodes.forEach((node, index) => {
     node.style.setProperty("--reveal-delay", `${staggerDelay(index % 9)}ms`);
   });
@@ -125,16 +141,65 @@ function setupPointerMotion() {
     if (aura) aura.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
   }, { passive: true });
 
-  document.querySelectorAll(".tilt-card, .store-browser").forEach((card) => {
-    card.addEventListener("pointermove", (event) => {
-      const rect = card.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width - 0.5;
-      const y = (event.clientY - rect.top) / rect.height - 0.5;
-      card.style.transform = `perspective(1000px) rotateX(${(-y * 7).toFixed(2)}deg) rotateY(${(x * 7).toFixed(2)}deg) translateZ(8px)`;
-      card.style.setProperty("--spot-x", `${((x + 0.5) * 100).toFixed(1)}%`);
-      card.style.setProperty("--spot-y", `${((y + 0.5) * 100).toFixed(1)}%`);
+  document.querySelectorAll(".service-card, .work-card, .model-card, .store-browser, .process-visual").forEach((card) => {
+    card.classList.add("motion-card");
+    card.insertAdjacentHTML("afterbegin", '<i class="card-glare" aria-hidden="true"></i>');
+    const frameGuard = createMotionFrameGuard();
+    let cardFrame = 0;
+    let cardRect = null;
+    let pointerEvent = null;
+
+    card.addEventListener("pointerenter", () => {
+      cardRect = card.getBoundingClientRect();
+      card.classList.add("is-motion-hovered");
     });
-    card.addEventListener("pointerleave", () => { card.style.transform = ""; });
+    card.addEventListener("pointermove", (event) => {
+      pointerEvent = event;
+      if (cardFrame) return;
+      const frameToken = frameGuard.issue();
+      cardFrame = requestAnimationFrame(() => {
+        if (!frameGuard.isCurrent(frameToken)) {
+          cardFrame = 0;
+          return;
+        }
+        const rect = cardRect || card.getBoundingClientRect();
+        const motion = deriveCardMotion({
+          pointerX: pointerEvent.clientX,
+          pointerY: pointerEvent.clientY,
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
+        });
+        card.style.setProperty("--card-rx", `${motion.rotateX}deg`);
+        card.style.setProperty("--card-ry", `${motion.rotateY}deg`);
+        card.style.setProperty("--card-x", `${motion.translateX}px`);
+        card.style.setProperty("--card-y", `${motion.translateY}px`);
+        card.style.setProperty("--card-inner-x", `${motion.innerX}px`);
+        card.style.setProperty("--card-inner-y", `${motion.innerY}px`);
+        card.style.setProperty("--spot-x", `${motion.shineX}%`);
+        card.style.setProperty("--spot-y", `${motion.shineY}%`);
+        cardFrame = 0;
+      });
+    });
+    const resetCard = () => {
+      frameGuard.cancel();
+      if (cardFrame) cancelAnimationFrame(cardFrame);
+      cardFrame = 0;
+      pointerEvent = null;
+      card.classList.remove("is-motion-hovered");
+      cardRect = null;
+      card.style.setProperty("--card-rx", "0deg");
+      card.style.setProperty("--card-ry", "0deg");
+      card.style.setProperty("--card-x", "0px");
+      card.style.setProperty("--card-y", "0px");
+      card.style.setProperty("--card-inner-x", "0px");
+      card.style.setProperty("--card-inner-y", "0px");
+      card.style.setProperty("--spot-x", "50%");
+      card.style.setProperty("--spot-y", "50%");
+    };
+    card.addEventListener("pointerleave", resetCard);
+    card.addEventListener("pointercancel", resetCard);
   });
 
   document.querySelectorAll(".magnetic").forEach((button) => {
@@ -157,9 +222,10 @@ function setupPageTransitions() {
     if (anchor.target || anchor.hasAttribute("download")) return;
     const href = anchor.getAttribute("href");
     if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
-    const destination = new URL(anchor.href, window.location.href);
+    let destination = new URL(anchor.href, window.location.href);
     if (destination.origin !== window.location.origin) return;
     if (destination.pathname === window.location.pathname && destination.hash) return;
+    destination = withMotionPreference({ href: destination.href, base: window.location.href, force: forceMotion });
 
     event.preventDefault();
     curtain?.classList.add("is-closing");
@@ -170,16 +236,37 @@ function setupPageTransitions() {
 
 const parallaxNodes = [...document.querySelectorAll(".hero-grid, .page-hero > div, .process-symbol, .store-copy, .store-browser")];
 let previousY = window.scrollY;
+let scrollDirection = 0;
+let scrollEnergy = 0;
 let scrollFrame = 0;
+
+function updateKineticText() {
+  kineticHeadings.forEach(({ heading, words }) => {
+    const rect = heading.getBoundingClientRect();
+    if (rect.bottom < -160 || rect.top > window.innerHeight + 160) return;
+    const viewportOffset = ((rect.top + rect.height / 2) / window.innerHeight - 0.5) * 2;
+    words.forEach((word, index) => {
+      const motion = deriveTextMotion({ viewportOffset, direction: scrollDirection, intensity: scrollEnergy, index });
+      word.style.setProperty("--word-scroll-x", `${motion.x}px`);
+      word.style.setProperty("--word-scroll-y", `${motion.y}px`);
+      word.style.setProperty("--word-skew", `${motion.skew}deg`);
+      word.style.setProperty("--word-rotate", `${motion.rotate}deg`);
+      word.style.setProperty("--word-scale-x", String(motion.scaleX));
+      word.style.setProperty("--word-scale-y", String(motion.scaleY));
+    });
+  });
+}
 
 function updateMotionFrame() {
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
   const state = deriveScrollMotion({ scrollY: window.scrollY, previousY, maxScroll });
   previousY = window.scrollY;
+  if (state.direction) scrollDirection = state.direction;
+  scrollEnergy = Math.max(state.intensity, scrollEnergy);
   root.style.setProperty("--scroll-progress", state.progress.toFixed(4));
-  root.style.setProperty("--scroll-direction", String(state.direction));
-  root.style.setProperty("--scroll-energy", state.intensity.toFixed(3));
-  root.style.setProperty("--marquee-speed", `${Math.max(11, 26 - state.intensity * 12).toFixed(2)}s`);
+  root.style.setProperty("--scroll-direction", String(scrollDirection));
+  root.style.setProperty("--scroll-energy", scrollEnergy.toFixed(3));
+  root.style.setProperty("--marquee-speed", `${Math.max(9, 26 - scrollEnergy * 15).toFixed(2)}s`);
   if (scrollMeter) scrollMeter.style.width = `${state.progress * 100}%`;
 
   if (profile.animate) {
@@ -189,14 +276,18 @@ function updateMotionFrame() {
       const depth = 10 + (index % 4) * 5;
       node.style.setProperty("--parallax-y", `${Math.max(-28, Math.min(28, -distance * depth)).toFixed(2)}px`);
     });
+    updateKineticText();
   }
+
+  scrollEnergy = settleMotion(scrollEnergy);
+  return scrollEnergy !== 0;
 }
 
 function requestMotionFrame() {
   if (scrollFrame) return;
   scrollFrame = requestAnimationFrame(() => {
-    updateMotionFrame();
     scrollFrame = 0;
+    if (updateMotionFrame()) requestMotionFrame();
   });
 }
 
@@ -218,8 +309,8 @@ window.addEventListener("pageshow", () => {
 });
 
 reduceMotion.addEventListener("change", (event) => {
-  profile = motionProfile({ reduced: event.matches, finePointer: finePointer.matches });
-  if (event.matches) {
+  profile = motionProfile({ reduced: event.matches, finePointer: finePointer.matches, force: forceMotion });
+  if (event.matches && !forceMotion) {
     root.classList.remove("motion-enabled");
     showEverything();
   }
