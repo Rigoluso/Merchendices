@@ -8,4 +8,4 @@ services:
     container_name: merchendice
     restart: unless-stopped
     ports:
-      - "127.0.0.1:82:8080"
+      - "82:8080"

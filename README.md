@@ -30,7 +30,7 @@ The container serves the static site through Nginx as an unprivileged user, incl
 
 ## Manage with Docker Compose
 
-The Compose service publishes the site only on `127.0.0.1:82`, ready for a separately managed reverse proxy such as the one serving `merchendice.com` on port 80. It does not manage or modify other web servers or containers.
+The Compose service publishes the site on host port `82`, ready for a separately managed reverse proxy such as the one serving `merchendice.com` on port 80. It does not manage or modify other web servers or containers.
 
 When migrating from a manually created container with the same name, remove it once:
 
