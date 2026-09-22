@@ -1,0 +1,11 @@
+name: merchendice
+
+services:
+  merchendice:
+    build:
+      context: .
+    image: merchendice:latest
+    container_name: merchendice
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:2211:8080"

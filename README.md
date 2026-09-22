@@ -28,6 +28,27 @@ Open `http://localhost:8080`.
 
 The container serves the static site through Nginx as an unprivileged user, includes a health check, compresses text assets, and applies long-lived caching to static brand assets.
 
+## Manage with Docker Compose
+
+The Compose service publishes the site only on `127.0.0.1:2211`, ready for a separately managed reverse proxy such as the one serving `merchendice.com` on port 80. It does not manage or modify other web servers or containers.
+
+When migrating from a manually created container with the same name, remove it once:
+
+```sh
+docker rm -f merchendice
+```
+
+Then manage the site from this repository:
+
+```sh
+docker compose up -d --build
+docker compose stop
+docker compose start
+docker compose restart
+docker compose logs -f
+docker compose down
+```
+
 ## Run without Docker
 
 Serve the `site/` directory with any static file server. For example:
@@ -39,6 +60,7 @@ python -m http.server 8080 --directory site
 ## Validate
 
 ```sh
+docker compose config --quiet
 node --test tests/site.test.mjs
 node scripts/check-site.mjs
 ```
