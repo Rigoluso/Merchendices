@@ -24,7 +24,7 @@ export function writeConsent(storage, analytics, decidedAt = new Date().toISOStr
 if (typeof document !== "undefined") {
   document.body.insertAdjacentHTML("beforeend", `
     <aside class="cookie-banner" data-cookie-banner aria-label="Cookie notice" hidden>
-      <div><span>Cookie control</span><h2>Choose what stays.</h2><p>We use essential local storage to remember this choice. Optional analytics remain off unless you allow them.</p></div>
+      <div><span>Cookie control</span><h2>Cookie settings</h2><p>We use essential local storage to remember this choice. Optional analytics remain off unless you allow them.</p></div>
       <div class="cookie-actions">
         <button class="button button-light" type="button" data-cookie-accept>Accept all</button>
         <button class="button button-outline" type="button" data-cookie-reject>Reject non-essential</button>
