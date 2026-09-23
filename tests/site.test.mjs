@@ -79,7 +79,7 @@ test("the site provides complete services, stores, about, and contact routes", (
     ["services", "Services"],
     ["stores", "Stores"],
     ["about", "About"],
-    ["contact", "Start a drop"],
+    ["contact", "Discuss your products"],
   ];
   const titles = new Set();
 
@@ -108,7 +108,7 @@ test("the stores page presents three honest demonstration storefronts", () => {
   assert.equal((html.match(/<p class=["']store-label["']>Demonstration store/gi) ?? []).length, 3);
   assert.match(html, /store-browser/);
   assert.doesNotMatch(html, /sales generated|conversion rate|revenue increased/i);
-  assert.match(html, /not claimed client work/i);
+  assert.match(html, /not live stores or client projects/i);
 });
 
 test("the contact page publishes a direct address and a complete enquiry form", () => {
@@ -141,10 +141,10 @@ test("the page includes the complete service and process story", () => {
   const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
 
   for (const phrase of [
-    "We design it",
-    "We build the store",
-    "We make every piece",
-    "We ship every order",
+    "Product design",
+    "Online stores",
+    "Production",
+    "Order fulfillment",
     "Zero setup fee",
   ]) {
     assert.match(html, new RegExp(phrase, "i"));
@@ -217,7 +217,9 @@ test("the supplied optimized logo is used throughout the brand", () => {
 
   assert.equal(existsSync(logoUrl), true);
   assert.equal(existsSync(new URL("../site/logo.svg", import.meta.url)), false);
-  assert.equal((html.match(/src=["']logo\.webp["']/g) ?? []).length, 5);
+  const imageSources = [...html.matchAll(/<img\b[^>]*src=["']([^"']+)["']/g)].map((match) => match[1]);
+  assert.ok(imageSources.length > 0);
+  assert.ok(imageSources.every((src) => src === "logo.webp"), "all brand illustrations reuse the supplied logo");
   assert.match(html, /rel=["']icon["'][^>]+href=["']logo\.webp["'][^>]+type=["']image\/webp["']/);
 
   const logo = readFileSync(logoUrl);

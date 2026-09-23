@@ -22,7 +22,8 @@ const closingSection = document.querySelector(".closing");
 const processVisual = document.querySelector(".process-visual");
 const processStages = [...document.querySelectorAll(".process-stage")];
 const processNumber = document.querySelector(".process-stage-number");
-const processBars = [...document.querySelectorAll(".process-progress i")];
+const processProgress = document.querySelector(".process-progress");
+let activeStage = 0;
 const scrollMeter = document.querySelector(".scroll-meter span");
 const root = document.documentElement;
 const kineticHeadings = [];
@@ -32,17 +33,6 @@ if (profile.animate) root.classList.add("force-motion");
 function installMotionLayer() {
   if (!profile.animate) return;
   root.classList.add("motion-enabled");
-  document.body.insertAdjacentHTML("beforeend", `
-    <div class="motion-field" aria-hidden="true">
-      <i class="motion-orb motion-orb--green"></i>
-      <i class="motion-orb motion-orb--violet"></i>
-      <i class="motion-orb motion-orb--orange"></i>
-      <i class="motion-scan"></i>
-    </div>
-    <div class="page-curtain is-intro" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-    <div class="cursor-aura" aria-hidden="true"></div>
-  `);
-  window.setTimeout(() => document.querySelector(".page-curtain")?.classList.remove("is-intro"), 1100);
 }
 
 function splitKineticText(element) {
@@ -83,16 +73,43 @@ function prepareKineticType() {
 }
 
 function setActiveStage(stageIndex) {
+  if (!processVisual || !processStages.length) return;
   const safeIndex = Math.max(0, Math.min(processStages.length - 1, stageIndex));
-  const stageChanged = processVisual?.dataset.stage !== String(safeIndex);
+  activeStage = safeIndex;
   processVisual?.setAttribute("data-stage", String(safeIndex));
-  if (processNumber) processNumber.textContent = String(safeIndex + 1).padStart(2, "0");
-  processStages.forEach((stage, index) => stage.classList.toggle("is-active", index === safeIndex));
-  processBars.forEach((bar, index) => { bar.style.opacity = index === safeIndex ? "1" : ".28"; });
-  if (stageChanged && processVisual && profile.animate) {
-    processVisual.classList.remove("stage-burst");
-    requestAnimationFrame(() => processVisual.classList.add("stage-burst"));
-  }
+  const stage = processStages[safeIndex];
+  const title = stage.querySelector("h3").textContent;
+  processNumber.textContent = `${String(safeIndex + 1).padStart(2, "0")} / 04`;
+  processVisual.querySelector(".process-step-label").textContent = stage.querySelector("p").textContent;
+  processVisual.querySelector(".process-panel-title").textContent = title;
+  processVisual.querySelector(".process-panel-description").textContent = stage.querySelector("p:last-of-type").textContent;
+  processStages.forEach((item, index) => {
+    item.classList.toggle("is-active", index === safeIndex);
+    const button = item.querySelector("[data-process-select]");
+    if (button) button.setAttribute("aria-current", String(index === safeIndex));
+  });
+  processProgress.setAttribute("aria-valuenow", String(safeIndex + 1));
+  processProgress.setAttribute("aria-valuetext", `Step ${safeIndex + 1} of 4: ${title}`);
+  processProgress.querySelector("span").style.width = `${(safeIndex + 1) * 25}%`;
+  processVisual.querySelector("[data-process-prev]").disabled = safeIndex === 0;
+  processVisual.querySelector("[data-process-next]").disabled = safeIndex === processStages.length - 1;
+}
+
+function setupProcessNavigation() {
+  if (!processVisual) return;
+  processVisual.querySelector(".process-navigation").hidden = false;
+  processVisual.querySelector("[data-process-prev]").addEventListener("click", () => setActiveStage(activeStage - 1));
+  processVisual.querySelector("[data-process-next]").addEventListener("click", () => setActiveStage(activeStage + 1));
+  processStages.forEach((stage, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.processSelect = String(index);
+    button.textContent = "View stage";
+    button.setAttribute("aria-label", `View stage ${index + 1}: ${stage.querySelector("h3").textContent}`);
+    button.addEventListener("click", () => setActiveStage(index));
+    stage.append(button);
+  });
+  setActiveStage(0);
 }
 
 function showEverything() {
@@ -137,12 +154,6 @@ function setupObservers() {
   }, { threshold: 0.04, rootMargin: "0px 0px 10%" });
   document.querySelectorAll("main > section, .store-showcase").forEach((section) => sectionObserver.observe(section));
 
-  const stageObserver = new IntersectionObserver((entries) => {
-    const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-    if (visible) setActiveStage(Number(visible.target.dataset.stageIndex));
-  }, { threshold: [0.25, 0.5, 0.75], rootMargin: "-18% 0px -35%" });
-
-  processStages.forEach((stage) => stageObserver.observe(stage));
 }
 
 function setupPointerMotion() {
@@ -158,7 +169,7 @@ function setupPointerMotion() {
     if (aura) aura.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
   }, { passive: true });
 
-  document.querySelectorAll(".service-card, .work-card, .model-card, .store-browser, .process-visual").forEach((card) => {
+  document.querySelectorAll(".service-card, .work-card, .model-card, .store-browser").forEach((card) => {
     card.classList.add("motion-card");
     card.insertAdjacentHTML("afterbegin", '<i class="card-glare" aria-hidden="true"></i>');
     const frameGuard = createMotionFrameGuard();
@@ -232,23 +243,10 @@ function setupPointerMotion() {
 }
 
 function setupPageTransitions() {
-  if (!profile.transitions) return;
-  const curtain = document.querySelector(".page-curtain");
-  document.addEventListener("click", (event) => {
-    const anchor = event.target.closest("a[href]");
-    if (!anchor || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    if (anchor.target || anchor.hasAttribute("download")) return;
-    const href = anchor.getAttribute("href");
-    if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
-    let destination = new URL(anchor.href, window.location.href);
-    if (destination.origin !== window.location.origin) return;
-    if (destination.pathname === window.location.pathname && destination.hash) return;
-    destination = withMotionPreference({ href: destination.href, base: window.location.href, explicitReduced });
-
-    event.preventDefault();
-    curtain?.classList.add("is-closing");
-    document.body.classList.add("is-leaving");
-    window.setTimeout(() => { window.location.href = destination.href; }, 820);
+  // Native navigation starts immediately and preserves browser link behavior.
+  document.querySelectorAll("a[href]").forEach((anchor) => {
+    if (anchor.origin !== location.origin || anchor.getAttribute("href").startsWith("#")) return;
+    anchor.href = withMotionPreference({ href: anchor.href, base: location.href, explicitReduced }).href;
   });
 }
 
@@ -311,11 +309,12 @@ function requestMotionFrame() {
 }
 
 installMotionLayer();
+setupProcessNavigation();
+setupPageTransitions();
 prepareKineticType();
 if (profile.animate) {
   setupObservers();
   setupPointerMotion();
-  setupPageTransitions();
 } else {
   showEverything();
 }

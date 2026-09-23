@@ -66,3 +66,13 @@ node scripts/check-site.mjs
 ```
 
 The contact form opens a prepared message in the visitor's email client, so the static site does not collect or retain enquiry data.
+
+The optional browser check requires Playwright and Chromium:
+
+```sh
+npm install --no-save --package-lock=false playwright
+npx playwright install chromium
+npm run check:browser
+```
+
+It checks all five routes at 320, 390, 768, and 1440 pixels, text contrast on solid content surfaces, process navigation (including keyboard use), immediate page navigation, and the no-JavaScript process fallback. Set `PLAYWRIGHT_MODULE_PATH` or `BROWSER_EXECUTABLE` to use an existing local installation. Decorative example artwork is excluded from the text-contrast check and should also be reviewed visually.
