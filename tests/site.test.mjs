@@ -32,7 +32,7 @@ test("each public page shares the Merchendice shell and legal entry points", () 
 test("the homepage stays concise and uses the supplied palette", () => {
   const html = read("index.html");
   const css = read("styles.css");
-  for (const phrase of ["Develop your next", "What we set up", "Start a conversation"]) {
+  for (const phrase of ["Creator merchandise", "Services", "Contact"]) {
     assert.match(html, new RegExp(phrase, "i"));
   }
   for (const color of ["#011627", "#FDFFFC", "#2EC4B6", "#E71D36", "#FF9F1C"]) {
@@ -53,6 +53,26 @@ test("all page shells use one centered rail and mobile-safe gutters", () => {
   assert.match(css, /--page-gutter\s*:/);
   assert.match(css, /\.page-wrap\s*,\s*\.site-header\s*\{/);
   assert.match(css, /\.legal-copy\s*\{[^}]*max-width\s*:\s*none/s);
+});
+
+test("the homepage uses factual copy instead of slogans", () => {
+  const html = read("index.html");
+  for (const phrase of ["Creator merchandise", "Services", "Process", "Fulfilment"]) {
+    assert.match(html, new RegExp(phrase, "i"), phrase);
+  }
+  for (const phrase of ["Develop your next", "A clear route", "No mystery process", "A product, made personal"]) {
+    assert.doesNotMatch(html, new RegExp(phrase, "i"), phrase);
+  }
+});
+
+test("the homepage gives each palette color a visible surface role", () => {
+  const css = read("styles.css");
+  for (const color of ["#011627", "#FDFFFC", "#2EC4B6", "#E71D36", "#FF9F1C"]) {
+    assert.match(css, new RegExp(color, "i"), color);
+  }
+  for (const selector of [".offer-card-teal", ".offer-card-red", ".offer-card-amber", ".process-panel", ".contact-panel"]) {
+    assert.match(css, new RegExp(selector.replace(".", "\\.")), selector);
+  }
 });
 
 test("contact page publishes every requested creator field and recipient", () => {

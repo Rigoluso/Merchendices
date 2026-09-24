@@ -73,7 +73,7 @@ try {
 
   const navigationPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
   await navigationPage.goto(origin);
-  await navigationPage.getByRole("link", { name: "Start a conversation", exact: true }).click();
+  await navigationPage.getByRole("link", { name: "Contact", exact: true }).click();
   await navigationPage.waitForURL("**/contact/", { timeout: 1000, waitUntil: "commit" });
   assert.equal(await navigationPage.locator("[data-contact-form]").isVisible(), true, "contact form reachable");
   await navigationPage.close();
