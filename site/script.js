@@ -19,11 +19,6 @@ let profile = motionProfile({ explicitReduced, finePointer: finePointer.matches 
 
 const revealNodes = [...document.querySelectorAll("[data-reveal]")];
 const closingSection = document.querySelector(".closing");
-const processVisual = document.querySelector(".process-visual");
-const processStages = [...document.querySelectorAll(".process-stage")];
-const processNumber = document.querySelector(".process-stage-number");
-const processProgress = document.querySelector(".process-progress");
-let activeStage = 0;
 const scrollMeter = document.querySelector(".scroll-meter span");
 const root = document.documentElement;
 const kineticHeadings = [];
@@ -62,7 +57,7 @@ function splitKineticText(element) {
 }
 
 function prepareKineticType() {
-  document.querySelectorAll("h1, h2, .service-card h3, .process-stage h3, .work-card h3").forEach((heading) => {
+  document.querySelectorAll("h1, h2, .service-card h3, .work-card h3").forEach((heading) => {
     splitKineticText(heading);
     heading.classList.add("motion-heading");
     kineticHeadings.push({ heading, words: [...heading.querySelectorAll(".kinetic-word")] });
@@ -72,51 +67,10 @@ function prepareKineticType() {
   });
 }
 
-function setActiveStage(stageIndex) {
-  if (!processVisual || !processStages.length) return;
-  const safeIndex = Math.max(0, Math.min(processStages.length - 1, stageIndex));
-  activeStage = safeIndex;
-  processVisual?.setAttribute("data-stage", String(safeIndex));
-  const stage = processStages[safeIndex];
-  const title = stage.querySelector("h3").textContent;
-  processNumber.textContent = `${String(safeIndex + 1).padStart(2, "0")} / 04`;
-  processVisual.querySelector(".process-step-label").textContent = stage.querySelector("p").textContent;
-  processVisual.querySelector(".process-panel-title").textContent = title;
-  processVisual.querySelector(".process-panel-description").textContent = stage.querySelector("p:last-of-type").textContent;
-  processStages.forEach((item, index) => {
-    item.classList.toggle("is-active", index === safeIndex);
-    const button = item.querySelector("[data-process-select]");
-    if (button) button.setAttribute("aria-current", String(index === safeIndex));
-  });
-  processProgress.setAttribute("aria-valuenow", String(safeIndex + 1));
-  processProgress.setAttribute("aria-valuetext", `Step ${safeIndex + 1} of 4: ${title}`);
-  processProgress.querySelector("span").style.width = `${(safeIndex + 1) * 25}%`;
-  processVisual.querySelector("[data-process-prev]").disabled = safeIndex === 0;
-  processVisual.querySelector("[data-process-next]").disabled = safeIndex === processStages.length - 1;
-}
-
-function setupProcessNavigation() {
-  if (!processVisual) return;
-  processVisual.querySelector(".process-navigation").hidden = false;
-  processVisual.querySelector("[data-process-prev]").addEventListener("click", () => setActiveStage(activeStage - 1));
-  processVisual.querySelector("[data-process-next]").addEventListener("click", () => setActiveStage(activeStage + 1));
-  processStages.forEach((stage, index) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.dataset.processSelect = String(index);
-    button.textContent = "View stage";
-    button.setAttribute("aria-label", `View stage ${index + 1}: ${stage.querySelector("h3").textContent}`);
-    button.addEventListener("click", () => setActiveStage(index));
-    stage.append(button);
-  });
-  setActiveStage(0);
-}
-
 function showEverything() {
   revealNodes.forEach((node) => node.classList.add("is-visible"));
   closingSection?.classList.add("is-visible");
   document.querySelectorAll("main > section, .store-showcase").forEach((section) => section.classList.add("motion-section-active"));
-  setActiveStage(0);
 }
 
 function revealTraversedContent() {
@@ -250,7 +204,7 @@ function setupPageTransitions() {
   });
 }
 
-const parallaxNodes = [...document.querySelectorAll(".hero-grid, .page-hero > div, .process-symbol, .store-copy, .store-browser")];
+const parallaxNodes = [...document.querySelectorAll(".hero-grid, .page-hero > div, .store-copy, .store-browser")];
 let previousY = window.scrollY;
 let scrollDirection = 0;
 let scrollEnergy = 0;
@@ -309,7 +263,6 @@ function requestMotionFrame() {
 }
 
 installMotionLayer();
-setupProcessNavigation();
 setupPageTransitions();
 prepareKineticType();
 if (profile.animate) {

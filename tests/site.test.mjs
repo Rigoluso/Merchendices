@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 test("the landing page exposes the required narrative sections", () => {
   const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
 
-  for (const id of ["top", "services", "process", "work", "model", "contact"]) {
+  for (const id of ["top", "services", "work", "model", "contact"]) {
     assert.match(html, new RegExp(`id=["']${id}["']`));
   }
 
@@ -137,7 +137,7 @@ test("every page loads shared cookie controls and exposes settings", () => {
   }
 });
 
-test("the page includes the complete service and process story", () => {
+test("the page includes the complete service story", () => {
   const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
 
   for (const phrase of [

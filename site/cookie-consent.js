@@ -34,7 +34,7 @@ if (typeof document !== "undefined") {
     <div class="cookie-overlay" data-cookie-overlay hidden>
       <section class="cookie-dialog" role="dialog" aria-modal="true" aria-labelledby="cookie-title" aria-describedby="cookie-description">
         <button class="cookie-close" type="button" data-cookie-close aria-label="Close cookie preferences">×</button>
-        <p class="section-kicker"><span>01</span> Privacy controls</p>
+        <p class="section-kicker">Privacy controls</p>
         <h2 id="cookie-title">Cookie preferences</h2>
         <p id="cookie-description">Choose whether Merchendices may use optional analytics. No advertising cookies are used.</p>
         <div class="cookie-choice"><div><strong>Essential storage</strong><p>Remembers your privacy choice. Always active.</p></div><span>Always on</span></div>

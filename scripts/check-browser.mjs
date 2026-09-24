@@ -65,53 +65,36 @@ try {
       assert.deepEqual(contrast, [], width+" "+route+" text contrast");
       if (width === 390) {
         chronologicalSequences += await page.locator(".process-stages, .process-rail").count();
+        assert.doesNotMatch(await page.locator("body").innerText(), /\b0[1-6]\b/, route+" contains an editorial ordering number");
       }
       console.log(width, route, "layout and contrast OK");
       if(route==="/"){
         if (process.env.REVIEW_DIR && [390, 1440].includes(width)) {
-          await page.locator(".process-visual").screenshot({path:path.join(process.env.REVIEW_DIR, `process-${width}.png`)});
           await page.evaluate(()=>scrollTo(0,0));
           await page.screenshot({path:path.join(process.env.REVIEW_DIR, `products-${width}.png`)});
         }
-        const prev=page.getByRole("button",{name:"Previous project stage",exact:true});
-        const next=page.getByRole("button",{name:"Next project stage",exact:true});
-        assert.equal(await prev.isDisabled(),true);
-        for(let i=2;i<=4;i++){
-          await next.click();
-          assert.equal(await page.getByRole("progressbar").getAttribute("aria-valuenow"),String(i));
-          assert.equal(await page.locator(".process-panel-title").textContent(),await page.locator(".process-stage h3").nth(i-1).textContent());
-        }
-        assert.equal(await next.isDisabled(),true);
-        await prev.focus(); await page.keyboard.press("Enter");
-        assert.equal(await page.getByRole("progressbar").getAttribute("aria-valuenow"),"3");
-        await page.getByRole("button",{name:/View stage 1:/}).click();
-        await page.evaluate(()=>scrollTo(0,document.body.scrollHeight));
-        assert.equal(await page.getByRole("progressbar").getAttribute("aria-valuenow"),"1");
         await page.evaluate(()=>scrollTo(0,0));
         // A 400ms deadline catches the previous 820ms artificial navigation wait.
         await page.getByRole("navigation",{name:"Primary"}).getByRole("link",{name:"Services",exact:true}).click({noWaitAfter:true});
-        await page.waitForURL("**/services/",{timeout:400});
+        await page.waitForURL("**/services/",{timeout:400, waitUntil:"commit"});
       }
     }
     assert.deepEqual(errors,[], "browser errors");
     await page.close();
   }
-  assert.equal(chronologicalSequences, 1, "only one chronological process component appears across the site");
-  // Controls also work with animation enabled, and remain usable without JavaScript.
+  assert.equal(chronologicalSequences, 0, "no chronological process component appears across the site");
+  // The page remains stable with animation enabled and usable without JavaScript.
   const animated = await browser.newPage({viewport:{width:390,height:844}});
   await animated.goto(origin);
   await animated.locator("[data-cookie-reject]").first().click();
-  await animated.locator("[data-process-next]").click();
   await animated.waitForTimeout(500);
-  assert.equal(await animated.locator(".process-progress").getAttribute("aria-valuenow"),"2");
   assert.equal(await animated.locator(".page-curtain").count(),0);
   await animated.close();
   const fallback = await browser.newPage({javaScriptEnabled:false});
   await fallback.goto(origin);
-  assert.equal(await fallback.locator(".process-stage:visible").count(),4);
-  assert.equal(await fallback.locator(".process-navigation").isVisible(),false);
+  assert.equal(await fallback.locator("main").isVisible(),true);
   await fallback.close();
-  console.log("Process arrows, keyboard, direct selection, native navigation, and no-JS fallback OK");
+  console.log("No editorial order numbers, native navigation, animated mode, and no-JS content OK");
 } finally {
   await browser?.close();
   server.close();
