@@ -43,6 +43,16 @@ try {
         return [...new Set(problems)];
       });
       assert.deepEqual(overflow, [], `${width} ${route} overflow`);
+      const rails = await page.evaluate(() => [...document.querySelectorAll(".site-header, .page-wrap")].map((element) => {
+        const box = element.getBoundingClientRect();
+        const styles = getComputedStyle(element);
+        return { left: box.left, right: box.right, paddingLeft: parseFloat(styles.paddingLeft) };
+      }));
+      const lefts = rails.map((rail) => rail.left);
+      const rights = rails.map((rail) => rail.right);
+      assert.ok(Math.max(...lefts) - Math.min(...lefts) <= 1, `${width} ${route} left rails drift`);
+      assert.ok(Math.max(...rights) - Math.min(...rights) <= 1, `${width} ${route} right rails drift`);
+      assert.ok(rails.every((rail) => rail.paddingLeft >= 16), `${width} ${route} gutter too narrow`);
       assert.equal(await page.locator("main").isVisible(), true, `${width} ${route} main visible`);
       assert.equal(await page.locator("[data-cookie-settings]").count() > 0, true, `${route} cookie settings`);
       console.log(width, route, "layout OK");

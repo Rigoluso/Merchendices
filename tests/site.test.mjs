@@ -42,6 +42,19 @@ test("the homepage stays concise and uses the supplied palette", () => {
   assert.ok((html.match(/<section\b/g) ?? []).length <= 5, "homepage should stay compact");
 });
 
+test("the homepage does not expose numbered workflow stages", () => {
+  const html = read("index.html");
+  assert.doesNotMatch(html, /\b0[1-4]\b/);
+});
+
+test("all page shells use one centered rail and mobile-safe gutters", () => {
+  const css = read("styles.css");
+  assert.match(css, /--content-max\s*:/);
+  assert.match(css, /--page-gutter\s*:/);
+  assert.match(css, /\.page-wrap\s*,\s*\.site-header\s*\{/);
+  assert.match(css, /\.legal-copy\s*\{[^}]*max-width\s*:\s*none/s);
+});
+
 test("contact page publishes every requested creator field and recipient", () => {
   const html = read("contact/index.html");
   assert.match(html, /merchendices@gmail\.com/i);
