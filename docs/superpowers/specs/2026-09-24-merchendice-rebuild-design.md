@@ -2,7 +2,7 @@
 
 ## Outcome
 
-Replace the existing multi-section showcase with a restrained static marketing site for Merchendices. The site should explain the offer quickly, make the next action obvious, and remain easy to host through the existing Docker/Nginx image.
+Replace the existing multi-section showcase with a restrained static marketing site for Merchendice. The site should explain the offer quickly, make the next action obvious, and remain easy to host through the existing Docker/Nginx image.
 
 ## Requirements
 

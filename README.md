@@ -1,19 +1,13 @@
-# Merchendices
-A compact, animated multipage website for a full-service YouTuber merchandise studio. The experience starts in monochrome and introduces electric green, violet, orange, and cyan through distinct scenes.
-
-Merchendices partners with influencers to build their shops, design their merchandise, and handle fulfillment.
+# Merchendice
+A focused static site for creator-led product projects. Merchendice helps turn a product idea into a considered storefront and a clear delivery loop.
 
 ## Pages
 
-- `/` — overview
-- `/services/` — design, storefront, production, and fulfillment
-- `/stores/` — three clearly labelled demonstration storefronts
-- `/about/` — the operating and commercial model
-- `/contact/` — project enquiry form and direct email
+- `/` — the focused overview
+- `/contact/` — creator enquiry form
+- `/terms/` — project terms and conditions
 
-The current contact address is `hello@merchendices.com`. Replace it in `site/contact/index.html` and `site/contact.js` if the production inbox differs.
-
-The store examples are deliberately presented as demonstrations rather than client work. Replace their copy and code-built previews with real links, screenshots, and results when those assets are available.
+The contact form opens a preformatted email addressed to `merchendices@gmail.com`. It asks for a name, email, YouTube, Instagram, TikTok, other platforms, and a project brief without sending data to a server.
 
 Cookie controls store only the visitor's consent decision in local storage. Optional analytics remain off unless accepted, and the site does not currently load an analytics provider.
 
@@ -75,4 +69,4 @@ npx playwright install chromium
 npm run check:browser
 ```
 
-It checks all five routes at 320, 390, 768, and 1440 pixels, text contrast on solid content surfaces, absence of editorial ordering numbers, immediate page navigation, animated mode, and the no-JavaScript content baseline. Set `PLAYWRIGHT_MODULE_PATH` or `BROWSER_EXECUTABLE` to use an existing local installation. Decorative example artwork is excluded from the text-contrast check and should also be reviewed visually.
+It checks all three routes at 320, 390, 768, and 1440 pixels, overflow safety, cookie settings, contact navigation, and the no-JavaScript content baseline. Set `PLAYWRIGHT_MODULE_PATH` or `BROWSER_EXECUTABLE` to use an existing local installation.

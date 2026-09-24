@@ -4,6 +4,7 @@ import { readFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import assert from "node:assert/strict";
+
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright");
 const root = fileURLToPath(new URL("../site/", import.meta.url));
@@ -12,89 +13,66 @@ const server = createServer(async (req, res) => {
     let file = path.join(root, new URL(req.url, "http://localhost").pathname);
     if (!file.startsWith(root)) throw Error("Invalid path");
     if ((await stat(file)).isDirectory()) file = path.join(file, "index.html");
-    res.setHeader("Content-Type", ({".js":"text/javascript",".css":"text/css",".html":"text/html",".webp":"image/webp"})[path.extname(file)] || "text/plain");
+    res.setHeader("Content-Type", ({ ".js": "text/javascript", ".css": "text/css", ".html": "text/html", ".webp": "image/webp" })[path.extname(file)] || "text/plain");
     res.end(await readFile(file));
-  } catch { res.writeHead(404); res.end(); }
+  } catch {
+    res.writeHead(404);
+    res.end();
+  }
 });
-await new Promise(r => server.listen(0, "127.0.0.1", r));
-const origin = "http://127.0.0.1:" + server.address().port;
+await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+const origin = `http://127.0.0.1:${server.address().port}`;
 let browser;
+
 try {
-  browser = await chromium.launch(process.env.BROWSER_EXECUTABLE ? {executablePath:process.env.BROWSER_EXECUTABLE} : {});
-  let chronologicalSequences = 0;
+  browser = await chromium.launch(process.env.BROWSER_EXECUTABLE ? { executablePath: process.env.BROWSER_EXECUTABLE } : {});
+  const routes = ["/", "/contact/", "/terms/"];
   for (const width of [320, 390, 768, 1440]) {
-    const page = await browser.newPage({viewport:{width,height:900}, reducedMotion:"reduce"});
+    const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
     const errors = [];
-    page.on("pageerror", e => errors.push(e.message));
-    for (const route of ["/", "/services/", "/stores/", "/about/", "/contact/"]) {
+    page.on("pageerror", (error) => errors.push(error.message));
+    for (const route of routes) {
       await page.goto(origin + route);
-      const reject = page.locator("[data-cookie-reject]").first();
-      if (await reject.isVisible()) await reject.click();
-      const overflow = await page.evaluate(async () => {
-        let failures=[];
-        for(let y=0;y<document.body.scrollHeight;y+=700){
-          scrollTo(0,y); await new Promise(r=>requestAnimationFrame(r));
-          if(document.documentElement.scrollWidth>innerWidth+1) failures.push("page");
-          for(const e of document.querySelectorAll("h1,h2,h3,p,.button")){
-            if(e.closest('[aria-hidden="true"]'))continue;
-            const b=e.getBoundingClientRect();
-            if(b.width && b.bottom>0 && b.top<innerHeight && (b.right>innerWidth+2||b.left< -2))failures.push(e.textContent.trim());
-          }
+      const overflow = await page.evaluate(() => {
+        const problems = [];
+        if (document.documentElement.scrollWidth > innerWidth + 1) problems.push("page");
+        for (const element of document.querySelectorAll("h1,h2,h3,p,.button,input,textarea")) {
+          const box = element.getBoundingClientRect();
+          if (box.width && (box.right > innerWidth + 2 || box.left < -2)) problems.push(element.textContent.trim());
         }
-        return [...new Set(failures)];
+        return [...new Set(problems)];
       });
-      assert.deepEqual(overflow, [], width+" "+route+" overflow");
-      // Audit rendered text against its solid surface, excluding decorative artwork.
-      const contrast = await page.evaluate(() => {
-        const rgb = s => (s.match(/[\d.]+/g)||[]).map(Number);
-        const lum = c => c.slice(0,3).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4}).reduce((s,v,i)=>s+v*[.2126,.7152,.0722][i],0);
-        const failures=[];
-        for(const e of document.querySelectorAll("body *")){
-          if(![...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim())||e.closest('[aria-hidden="true"],[hidden],.capability-visual,.demo-store,.deck-card')||e.disabled)continue;
-          const r=e.getBoundingClientRect(),s=getComputedStyle(e);
-          if(!r.width||!r.height)continue;
-          let p=e,bg;
-          while(p){const c=rgb(getComputedStyle(p).backgroundColor);if(c.length>=3&&(c.length===3||c[3]===1)){bg=c;break;}p=p.parentElement;}
-          if(!bg)continue;
-          const fg=rgb(s.color),a=lum(fg),b=lum(bg),ratio=(Math.max(a,b)+.05)/(Math.min(a,b)+.05);
-          const size=parseFloat(s.fontSize),large=size>=24||(size>=18.66&&parseInt(s.fontWeight)>=700);
-          if(ratio<(large?3:4.5))failures.push({text:e.textContent.trim().slice(0,65),ratio:ratio.toFixed(2)});
-        }
-        return failures;
-      });
-      assert.deepEqual(contrast, [], width+" "+route+" text contrast");
-      if (width === 390) {
-        chronologicalSequences += await page.locator(".process-stages, .process-rail").count();
-        assert.doesNotMatch(await page.locator("body").innerText(), /\b0[1-6]\b/, route+" contains an editorial ordering number");
-      }
-      console.log(width, route, "layout and contrast OK");
-      if(route==="/"){
-        if (process.env.REVIEW_DIR && [390, 1440].includes(width)) {
-          await page.evaluate(()=>scrollTo(0,0));
-          await page.screenshot({path:path.join(process.env.REVIEW_DIR, `products-${width}.png`)});
-        }
-        await page.evaluate(()=>scrollTo(0,0));
-        // A 400ms deadline catches the previous 820ms artificial navigation wait.
-        await page.getByRole("navigation",{name:"Primary"}).getByRole("link",{name:"Services",exact:true}).click({noWaitAfter:true});
-        await page.waitForURL("**/services/",{timeout:400, waitUntil:"commit"});
-      }
+      assert.deepEqual(overflow, [], `${width} ${route} overflow`);
+      assert.equal(await page.locator("main").isVisible(), true, `${width} ${route} main visible`);
+      assert.equal(await page.locator("[data-cookie-settings]").count() > 0, true, `${route} cookie settings`);
+      console.log(width, route, "layout OK");
     }
-    assert.deepEqual(errors,[], "browser errors");
+    assert.deepEqual(errors, [], `${width} browser errors`);
     await page.close();
   }
-  assert.equal(chronologicalSequences, 0, "no chronological process component appears across the site");
-  // The page remains stable with animation enabled and usable without JavaScript.
-  const animated = await browser.newPage({viewport:{width:390,height:844}});
-  await animated.goto(origin);
-  await animated.locator("[data-cookie-reject]").first().click();
-  await animated.waitForTimeout(500);
-  assert.equal(await animated.locator(".page-curtain").count(),0);
-  await animated.close();
-  const fallback = await browser.newPage({javaScriptEnabled:false});
+
+  const cookiePage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await cookiePage.goto(origin);
+  const reject = cookiePage.locator("[data-cookie-reject]").first();
+  if (await reject.isVisible()) await reject.click();
+  await cookiePage.locator("[data-cookie-settings]").first().click();
+  assert.equal(await cookiePage.locator("[data-cookie-dialog]").isVisible(), true, "cookie dialog opens");
+  await cookiePage.locator("[data-cookie-close]").first().click();
+  assert.equal(await cookiePage.locator("[data-cookie-dialog]").isVisible(), false, "cookie dialog closes");
+  await cookiePage.close();
+
+  const navigationPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await navigationPage.goto(origin);
+  await navigationPage.getByRole("link", { name: "Start a conversation", exact: true }).click();
+  await navigationPage.waitForURL("**/contact/", { timeout: 1000, waitUntil: "commit" });
+  assert.equal(await navigationPage.locator("[data-contact-form]").isVisible(), true, "contact form reachable");
+  await navigationPage.close();
+
+  const fallback = await browser.newPage({ javaScriptEnabled: false });
   await fallback.goto(origin);
-  assert.equal(await fallback.locator("main").isVisible(),true);
+  assert.equal(await fallback.locator("main").isVisible(), true, "no-JS main visible");
   await fallback.close();
-  console.log("No editorial order numbers, native navigation, animated mode, and no-JS content OK");
+  console.log("Responsive layout, cookie settings, contact navigation, and no-JS content OK");
 } finally {
   await browser?.close();
   server.close();

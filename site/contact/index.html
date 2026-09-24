@@ -3,43 +3,29 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Contact Merchendices about your own products, online store, production, or fulfillment requirements." />
-    <meta name="theme-color" content="#02182b" />
-    <title>Contact — Merchendices</title>
+    <meta name="description" content="Start a Merchendice creator product enquiry." />
+    <meta name="theme-color" content="#011627" />
+    <title>Contact — Merchendice</title>
     <link rel="icon" href="/logo.webp" type="image/webp" />
     <link rel="stylesheet" href="/styles.css" />
-    <script type="module" src="/script.js"></script>
+    <script type="module" src="/site.js"></script>
     <script type="module" src="/contact.js"></script>
     <script type="module" src="/cookie-consent.js"></script>
   </head>
-  <body class="inner-page" id="top">
+  <body id="top">
     <a class="skip-link" href="#main">Skip to content</a>
-    <div class="scroll-meter" aria-hidden="true"><span></span></div>
-    <header class="site-header">
-      <a class="brand" href="/" aria-label="Merchendices home"><img class="brand-logo" src="/logo.webp" alt="" width="40" height="40" /><span>MERCHENDICES</span></a>
-      <nav aria-label="Primary"><a href="/services/">Services</a><a href="/stores/">Stores</a><a href="/about/">About</a></nav>
-      <a class="button button-small button-light magnetic" href="/contact/" aria-current="page">Discuss your products <span aria-hidden="true">↗</span></a>
-    </header>
-
+    <header class="site-header"><a class="brand" href="/" aria-label="Merchendice home"><img src="/logo.webp" alt="" width="48" height="48" /><span>MERCHENDICE</span></a><nav aria-label="Primary"><a href="/#offer">What we set up</a><a href="/#method">How it works</a><a href="/terms/">Terms</a></nav><a class="button button-red" href="/contact/" aria-current="page">Contact <span aria-hidden="true">↗</span></a></header>
     <main id="main">
-      <section class="page-hero page-hero--cyan contact-hero" aria-labelledby="page-title">
-        <div data-reveal><p class="section-kicker">Contact</p><h1 id="page-title">Discuss your<br />products</h1></div>
-        <div class="contact-direct" data-reveal><span>Direct email</span><a href="mailto:hello@merchendices.com">hello@merchendices.com</a><p>Project enquiries / partnerships / creator introductions</p></div>
-      </section>
-
-      <section class="contact-section" aria-labelledby="contact-form-title">
-        <div class="contact-aside" data-reveal><p class="section-kicker">Project brief</p><h2 id="contact-form-title">Your product<br />requirements</h2><p>Share the essentials. The form opens a prepared message in your email app, so nothing is stored on this website.</p></div>
+      <section class="subpage-hero page-wrap" aria-labelledby="page-title"><div data-reveal><p class="eyebrow"><span class="dot dot-red" aria-hidden="true"></span> Start a conversation</p><h1 id="page-title">Tell us what you’re building.</h1><p class="hero-lede">The form opens an email addressed to merchendices@gmail.com. Nothing is stored on this website.</p></div><div class="subpage-aside" data-reveal><img src="/logo.webp" alt="" width="170" height="170" /><p>Bring the rough idea.<br /><strong>We’ll find the shape.</strong></p></div></section>
+      <section class="contact-layout page-wrap" aria-labelledby="form-title"><div class="section-intro" data-reveal><p class="eyebrow"><span class="dot dot-teal" aria-hidden="true"></span> Project details</p><h2 id="form-title">A useful first note is enough.</h2><p>Share as much or as little as you have. We’ll reply from there.</p></div>
         <form class="contact-form" data-contact-form novalidate>
-          <label><span>Your name *</span><input name="name" autocomplete="name" required /></label>
-          <label><span>Email *</span><input type="email" name="email" autocomplete="email" required /></label>
-          <label><span>Channel URL</span><input type="url" name="channel" inputmode="url" placeholder="https://youtube.com/@yourchannel" /></label>
-          <label><span>Audience size *</span><select name="audience" required><option value="">Choose a range</option><option>Under 25k</option><option>25k–100k</option><option>100k–500k</option><option>500k–1m</option><option>1m+</option></select></label>
-          <label class="form-wide"><span>Which products would you like to develop? *</span><textarea name="message" rows="6" required placeholder="Tell us about the channel, audience, timing, and your first idea."></textarea></label>
-          <div class="form-submit form-wide"><p data-form-status aria-live="polite">Required fields are marked with an asterisk.</p><button class="button button-dark magnetic" type="submit">Prepare email <span aria-hidden="true">↗</span></button></div>
+          <div class="form-row"><label><span>Name <b>*</b></span><input name="name" autocomplete="name" required /></label><label><span>Email <b>*</b></span><input type="email" name="email" autocomplete="email" required /></label></div>
+          <fieldset><legend>Where can we find you?</legend><div class="form-row"><label><span>YouTube</span><input name="youtube" inputmode="url" placeholder="Channel link or handle" /></label><label><span>Instagram</span><input name="instagram" inputmode="url" placeholder="Profile link or handle" /></label></div><div class="form-row"><label><span>TikTok</span><input name="tiktok" inputmode="url" placeholder="Profile link or handle" /></label><label><span>Other platforms</span><input name="otherPlatforms" placeholder="Twitch, X, website…" /></label></div></fieldset>
+          <label><span>What would you like to make? <b>*</b></span><textarea name="message" rows="7" required placeholder="Tell us about the product, audience, timing, or question you have."></textarea></label>
+          <div class="form-actions"><p data-form-status aria-live="polite">Required fields are marked with an asterisk.</p><button class="button button-red" type="submit">Prepare email <span aria-hidden="true">↗</span></button></div>
         </form>
       </section>
     </main>
-
-    <footer class="site-footer"><a class="brand" href="/"><img class="brand-logo" src="/logo.webp" alt="" width="40" height="40" /><span>MERCHENDICES</span></a><p>hello@merchendices.com</p><div class="footer-actions"><button type="button" data-cookie-settings>Cookie settings</button><a href="#top">Back to top ↑</a></div></footer>
+    <footer class="site-footer page-wrap"><a class="brand" href="/"><img src="/logo.webp" alt="" width="36" height="36" /><span>MERCHENDICE</span></a><p>merchendices@gmail.com</p><div class="footer-links"><button type="button" data-cookie-settings>Cookie settings</button><a href="/terms/">Terms &amp; conditions</a></div></footer>
   </body>
 </html>

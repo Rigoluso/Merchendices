@@ -7,15 +7,12 @@ const siteRoot = resolve(root, "site");
 const requiredFiles = [
   "index.html",
   "styles.css",
-  "script.js",
-  "motion-core.js",
+  "site.js",
   "contact.js",
   "cookie-consent.js",
   "logo.webp",
-  "services/index.html",
-  "stores/index.html",
-  "about/index.html",
   "contact/index.html",
+  "terms/index.html",
 ];
 
 function collectHtml(directory) {
@@ -63,7 +60,7 @@ for (const htmlPath of htmlFiles) {
 const sourceFiles = [
   ...htmlFiles,
   resolve(siteRoot, "styles.css"),
-  resolve(siteRoot, "script.js"),
+  resolve(siteRoot, "site.js"),
   resolve(siteRoot, "contact.js"),
   resolve(siteRoot, "cookie-consent.js"),
 ];
@@ -72,4 +69,4 @@ for (const path of sourceFiles) {
   if (/\b(?:TODO|TBD)\b/.test(source)) throw new Error(`Unfinished marker in site/${relative(siteRoot, path)}`);
 }
 
-console.log(`Merchendices site validated: ${htmlFiles.length} HTML documents and ${referenceCount} local references checked.`);
+console.log(`Merchendice site validated: ${htmlFiles.length} HTML documents and ${referenceCount} local references checked.`);

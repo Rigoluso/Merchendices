@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the existing showcase site with a compact Merchendices static site that preserves Docker/Nginx hosting, reuses the dice logo, adds cookie settings and terms, and provides a preformatted creator enquiry email flow.
+**Goal:** Replace the existing showcase site with a compact Merchendice static site that preserves Docker/Nginx hosting, reuses the dice logo, adds cookie settings and terms, and provides a preformatted creator enquiry email flow.
 
 **Architecture:** Three static HTML routes share one stylesheet and two small browser modules. `contact.js` validates and formats form data into a `mailto:` URL; `cookie-consent.js` stores only the user's consent choice and exposes a settings dialog. The existing Nginx/Docker boundary remains the deployment layer.
 
@@ -79,7 +79,7 @@
 
 - [ ] **Step 4: Implement the mailto formatter**
 
-  Validate required fields, encode a subject containing “Merchendices creator enquiry”, and encode a body with every field label plus a blank-safe fallback. Do not call a server.
+  Validate required fields, encode a subject containing “Merchendice creator enquiry”, and encode a body with every field label plus a blank-safe fallback. Do not call a server.
 
 - [ ] **Step 5: Run the focused tests**
 
