@@ -21,6 +21,7 @@ const origin = "http://127.0.0.1:" + server.address().port;
 let browser;
 try {
   browser = await chromium.launch(process.env.BROWSER_EXECUTABLE ? {executablePath:process.env.BROWSER_EXECUTABLE} : {});
+  let chronologicalSequences = 0;
   for (const width of [320, 390, 768, 1440]) {
     const page = await browser.newPage({viewport:{width,height:900}, reducedMotion:"reduce"});
     const errors = [];
@@ -62,6 +63,9 @@ try {
         return failures;
       });
       assert.deepEqual(contrast, [], width+" "+route+" text contrast");
+      if (width === 390) {
+        chronologicalSequences += await page.locator(".process-stages, .process-rail").count();
+      }
       console.log(width, route, "layout and contrast OK");
       if(route==="/"){
         if (process.env.REVIEW_DIR && [390, 1440].includes(width)) {
@@ -92,6 +96,7 @@ try {
     assert.deepEqual(errors,[], "browser errors");
     await page.close();
   }
+  assert.equal(chronologicalSequences, 1, "only one chronological process component appears across the site");
   // Controls also work with animation enabled, and remain usable without JavaScript.
   const animated = await browser.newPage({viewport:{width:390,height:844}});
   await animated.goto(origin);
