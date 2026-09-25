@@ -10,7 +10,7 @@ services:
     environment:
       SMTP_USER: ${SMTP_USER}
       SMTP_APP_PASSWORD: ${SMTP_APP_PASSWORD}
-      MAIL_TO: ${MAIL_TO:-merchendice@gmail.com}
+      MAIL_TO: ${MAIL_TO:-merchendices@gmail.com}
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-https://merchendice.com}
       PORT: 3000
     expose:

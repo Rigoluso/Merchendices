@@ -7,7 +7,7 @@ A focused static site for creator-led product projects. Merchendice helps turn a
 - `/contact/` — creator enquiry form
 - `/terms/` — project terms and conditions
 
-The contact form sends a creator enquiry through the private `mail-api` service to `merchendice@gmail.com`. It asks for a name, email, YouTube, Instagram, TikTok, other platforms, and a project brief. The visitor stays on the site and sees an inline delivery status.
+The contact form sends a creator enquiry through the private `mail-api` service to `merchendices@gmail.com`. It asks for a name, email, YouTube, Instagram, TikTok, other platforms, and a project brief. The visitor stays on the site and sees an inline delivery status.
 
 Cookie controls store only the visitor's consent decision in local storage. Optional analytics remain off unless accepted, and the site does not currently load an analytics provider.
 
@@ -30,7 +30,7 @@ The Compose stack publishes the site on host port `82`, ready for a separately m
 
 ### Configure Gmail delivery
 
-The sender account must have Google 2-Step Verification enabled. Create a Google App Password for `merchendice@gmail.com`; do not use the normal Gmail account password. On the server, create a private environment file from the template:
+The sender account must have Google 2-Step Verification enabled. Create a Google App Password for `merchendices@gmail.com`; do not use the normal Gmail account password. On the server, create a private environment file from the template:
 
 ```sh
 cp .env.example .env
@@ -59,7 +59,7 @@ docker compose logs -f mail-api
 docker compose down
 ```
 
-The health endpoint should return `{"ok":true}`. A successful form submission is sent from `merchendice@gmail.com` to `MAIL_TO` (defaulting to the same account), with the creator's email used as `Reply-To`.
+The health endpoint should return `{"ok":true}`. A successful form submission is sent from `merchendices@gmail.com` to `MAIL_TO` (defaulting to the same account), with the creator's email used as `Reply-To`.
 
 ## Run without Docker
 

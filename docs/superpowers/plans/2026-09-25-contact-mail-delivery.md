@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the contact page's local `mailto:` handoff with a secure Dockerized API that sends enquiries from `merchendice@gmail.com` through Gmail SMTP.
+**Goal:** Replace the contact page's local `mailto:` handoff with a secure Dockerized API that sends enquiries from `merchendices@gmail.com` through Gmail SMTP.
 
 **Architecture:** Keep the existing unprivileged Nginx container for static files and proxy `/api/contact` over the Compose network to a private Node `mail-api` service. The API validates JSON, applies a honeypot and in-memory rate limit, and uses Nodemailer with a Gmail App Password injected from a server-only `.env` file.
 
@@ -17,7 +17,7 @@
 - No mail API port is exposed publicly; only Nginx can reach it over the Compose network.
 - The API accepts same-origin requests and rejects disallowed `Origin` headers.
 - Compose manages both containers, including restart policy and health checks.
-- Form submissions send `from: merchendice@gmail.com`, `to: merchendice@gmail.com`, and `replyTo` as the submitted creator email.
+- Form submissions send `from: merchendices@gmail.com`, `to: merchendices@gmail.com`, and `replyTo` as the submitted creator email.
 
 ## Review Focus
 
@@ -189,9 +189,9 @@ Expected: PASS after Task 1 and Task 3 are present; if any old mailto reference 
 Document:
 
 ```dotenv
-SMTP_USER=merchendice@gmail.com
+SMTP_USER=merchendices@gmail.com
 SMTP_APP_PASSWORD=replace-with-16-character-google-app-password
-MAIL_TO=merchendice@gmail.com
+MAIL_TO=merchendices@gmail.com
 ALLOWED_ORIGIN=https://merchendice.com
 ```
 
@@ -221,4 +221,3 @@ git commit -m "docs: document gmail contact deployment"
 ```sh
 git push origin main
 ```
-

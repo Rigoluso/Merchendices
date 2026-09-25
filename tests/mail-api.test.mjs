@@ -5,8 +5,8 @@ import test from "node:test";
 import { buildMessage, createMailServer, createRateLimiter } from "../mail-api/server.mjs";
 
 const env = {
-  SMTP_USER: "merchendice@gmail.com",
-  MAIL_TO: "merchendice@gmail.com",
+  SMTP_USER: "merchendices@gmail.com",
+  MAIL_TO: "merchendices@gmail.com",
   ALLOWED_ORIGIN: "https://merchendice.com",
 };
 
@@ -71,8 +71,8 @@ test("valid contact submission sends the expected Gmail message", async () => {
   });
 
   assert.deepEqual(sent, buildMessage(validPayload, { from: env.SMTP_USER, to: env.MAIL_TO }));
-  assert.equal(sent.from, "merchendice@gmail.com");
-  assert.equal(sent.to, "merchendice@gmail.com");
+  assert.equal(sent.from, "merchendices@gmail.com");
+  assert.equal(sent.to, "merchendices@gmail.com");
   assert.equal(sent.replyTo, "alex@example.com");
   assert.match(sent.text, /Project brief: A bright summer drop\./);
 });

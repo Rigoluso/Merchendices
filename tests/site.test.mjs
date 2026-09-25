@@ -77,7 +77,7 @@ test("the homepage gives each palette color a visible surface role", () => {
 
 test("contact page publishes every requested creator field and recipient", () => {
   const html = read("contact/index.html");
-  assert.match(html, /merchendice@gmail\.com/i);
+  assert.match(html, /merchendices@gmail\.com/i);
   for (const field of ["name", "email", "youtube", "instagram", "tiktok", "otherPlatforms", "message"]) {
     assert.match(html, new RegExp(`name=["']${field}["']`, "i"), field);
   }
@@ -87,7 +87,7 @@ test("contact page publishes every requested creator field and recipient", () =>
 
 test("terms page covers the operating agreements", () => {
   const html = read("terms/index.html");
-  for (const phrase of ["Scope", "Approvals", "Production", "Shipping", "Intellectual property", "Privacy", "merchendice@gmail.com"]) {
+  for (const phrase of ["Scope", "Approvals", "Production", "Shipping", "Intellectual property", "Privacy", "merchendices@gmail.com"]) {
     assert.match(html, new RegExp(phrase, "i"), phrase);
   }
 });
