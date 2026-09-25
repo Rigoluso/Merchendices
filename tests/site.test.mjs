@@ -75,6 +75,17 @@ test("the homepage gives each palette color a visible surface role", () => {
   }
 });
 
+test("the homepage uses a restrained studio visual system", () => {
+  const html = read("index.html");
+  const css = read("styles.css");
+  assert.doesNotMatch(html, /mark-ring|mark-caption|card-symbol/);
+  assert.match(css, /--radius:\s*2px/);
+  assert.match(css, /--surface-soft:/);
+  assert.match(css, /\.button:hover\s*\{[^}]*transform:\s*none/s);
+  assert.match(css, /\.offer-card:hover\s*\{/);
+  assert.doesNotMatch(css, /rotate\(/);
+});
+
 test("contact page publishes every requested creator field and recipient", () => {
   const html = read("contact/index.html");
   assert.match(html, /merchendices@gmail\.com/i);
