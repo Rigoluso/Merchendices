@@ -123,3 +123,18 @@ test("the deployment boundary remains an unprivileged nginx container", () => {
   assert.match(compose, /merchendice/);
   assert.match(nginx, /listen\s+8080/);
 });
+
+test("contact delivery stays private behind the nginx proxy", () => {
+  const compose = readFileSync(new URL("../compose.yaml", import.meta.url), "utf8");
+  const nginx = readFileSync(new URL("../nginx.conf", import.meta.url), "utf8");
+  const contact = read("contact/index.html");
+  const mailApiBlock = compose.match(/  mail-api:[\s\S]*?(?=\n  \w|$)/)?.[0] ?? "";
+
+  assert.match(compose, /mail-api:/);
+  assert.match(compose, /SMTP_APP_PASSWORD/);
+  assert.match(mailApiBlock, /expose:\s*\n\s*- ["']?3000/);
+  assert.doesNotMatch(mailApiBlock, /ports:/);
+  assert.match(nginx, /location\s*=\s+\/api\/contact/);
+  assert.match(nginx, /proxy_pass\s+http:\/\/mail-api:3000\/contact/);
+  assert.doesNotMatch(contact, /mailto:|Prepare email|opens an email/i);
+});
