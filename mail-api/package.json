@@ -1,0 +1,12 @@
+{
+  "name": "merchendice-mail-api",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "nodemailer": "6.9.16"
+  }
+}

@@ -1,0 +1,143 @@
+import assert from "node:assert/strict";
+import { request as httpRequest } from "node:http";
+import test from "node:test";
+
+import { buildMessage, createMailServer } from "../mail-api/server.mjs";
+
+const env = {
+  SMTP_USER: "merchendice@gmail.com",
+  MAIL_TO: "merchendice@gmail.com",
+  ALLOWED_ORIGIN: "https://merchendice.com",
+};
+
+const validPayload = {
+  name: "Alex Creator",
+  email: "alex@example.com",
+  youtube: "https://youtube.com/@alex",
+  instagram: "@alex",
+  tiktok: "alexclips",
+  otherPlatforms: "Twitch: alexlive",
+  message: "A bright summer drop.",
+  website: "",
+};
+
+function send(server, { method = "POST", path = "/contact", headers = {}, body } = {}) {
+  const address = server.address();
+  return new Promise((resolve, reject) => {
+    const request = httpRequest(
+      { host: "127.0.0.1", port: address.port, method, path, headers },
+      (response) => {
+        let output = "";
+        response.setEncoding("utf8");
+        response.on("data", (chunk) => { output += chunk; });
+        response.on("end", () => resolve({ status: response.statusCode, body: JSON.parse(output || "{}") }));
+      },
+    );
+    request.on("error", reject);
+    if (body !== undefined) request.write(JSON.stringify(body));
+    request.end();
+  });
+}
+
+async function withServer(options, callback) {
+  const server = createMailServer({ env, ...options });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  try {
+    return await callback(server);
+  } finally {
+    await new Promise((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+  }
+}
+
+test("health endpoint reports that the mail API is available", async () => {
+  await withServer({ transport: { sendMail: async () => {} } }, async (server) => {
+    const response = await send(server, { method: "GET", path: "/healthz" });
+    assert.deepEqual(response, { status: 200, body: { ok: true } });
+  });
+});
+
+test("valid contact submission sends the expected Gmail message", async () => {
+  let sent;
+  await withServer({ transport: { sendMail: async (message) => { sent = message; } } }, async (server) => {
+    const response = await send(server, {
+      headers: {
+        "content-type": "application/json",
+        "content-length": Buffer.byteLength(JSON.stringify(validPayload)),
+        origin: "https://merchendice.com",
+      },
+      body: validPayload,
+    });
+    assert.deepEqual(response, { status: 200, body: { ok: true } });
+  });
+
+  assert.deepEqual(sent, buildMessage(validPayload, { from: env.SMTP_USER, to: env.MAIL_TO }));
+  assert.equal(sent.from, "merchendice@gmail.com");
+  assert.equal(sent.to, "merchendice@gmail.com");
+  assert.equal(sent.replyTo, "alex@example.com");
+  assert.match(sent.text, /Project brief: A bright summer drop\./);
+});
+
+test("missing or invalid required fields return 400 without sending", async () => {
+  let sends = 0;
+  await withServer({ transport: { sendMail: async () => { sends += 1; } } }, async (server) => {
+    const response = await send(server, {
+      headers: { "content-type": "application/json", origin: "https://merchendice.com" },
+      body: { ...validPayload, name: "", email: "not-an-email", message: "" },
+    });
+    assert.equal(response.status, 400);
+    assert.match(response.body.error, /valid email.*project brief/i);
+  });
+  assert.equal(sends, 0);
+});
+
+test("a filled honeypot returns 400 without sending", async () => {
+  let sends = 0;
+  await withServer({ transport: { sendMail: async () => { sends += 1; } } }, async (server) => {
+    const response = await send(server, {
+      headers: { "content-type": "application/json", origin: "https://merchendice.com" },
+      body: { ...validPayload, website: "https://spam.example" },
+    });
+    assert.deepEqual(response, { status: 400, body: { error: "Unable to process this submission." } });
+  });
+  assert.equal(sends, 0);
+});
+
+test("a disallowed origin returns 403 without sending", async () => {
+  let sends = 0;
+  await withServer({ transport: { sendMail: async () => { sends += 1; } } }, async (server) => {
+    const response = await send(server, {
+      headers: { "content-type": "application/json", origin: "https://evil.example" },
+      body: validPayload,
+    });
+    assert.deepEqual(response, { status: 403, body: { error: "Origin not allowed." } });
+  });
+  assert.equal(sends, 0);
+});
+
+test("rate-limited clients receive 429 without sending", async () => {
+  let sends = 0;
+  await withServer({
+    transport: { sendMail: async () => { sends += 1; } },
+    rateLimiter: { allow: () => false },
+  }, async (server) => {
+    const response = await send(server, {
+      headers: { "content-type": "application/json", origin: "https://merchendice.com" },
+      body: validPayload,
+    });
+    assert.deepEqual(response, { status: 429, body: { error: "Too many requests. Please try again later." } });
+  });
+  assert.equal(sends, 0);
+});
+
+test("transport failures return a generic 502 response", async () => {
+  await withServer({
+    transport: { sendMail: async () => { throw new Error("SMTP password leaked in this error"); } },
+  }, async (server) => {
+    const response = await send(server, {
+      headers: { "content-type": "application/json", origin: "https://merchendice.com" },
+      body: validPayload,
+    });
+    assert.deepEqual(response, { status: 502, body: { error: "Unable to send your enquiry." } });
+    assert.doesNotMatch(JSON.stringify(response.body), /SMTP password/i);
+  });
+});
