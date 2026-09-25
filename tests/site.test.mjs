@@ -120,6 +120,8 @@ test("the site defines every shared layout token and avoids dead selectors", () 
   assert.doesNotMatch(css, /\.path-visual/);
   assert.doesNotMatch(css, /\.hero-copy/);
   assert.doesNotMatch(css, /\.button:hover\s*\{\s*transform:\s*none;\s*\}/);
+  assert.match(css, /\.path-node\s*\{[^}]*width:\s*7rem[^}]*place-items:\s*center/s);
+  assert.match(css, /\.path-node span\s*\{[^}]*position:\s*relative/s);
   assert.match(siteJs, /const revealNodes = document\.querySelectorAll/);
 });
 

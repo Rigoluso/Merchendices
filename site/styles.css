@@ -461,24 +461,25 @@ h3 {
 
 .path-node {
   position: absolute;
-  top: calc(50% - 2.1rem);
+  top: calc(50% - 1.8rem);
   display: grid;
-  gap: 0.65rem;
-  justify-items: center;
+  width: 7rem;
+  height: 3.6rem;
+  place-items: center;
   color: var(--paper);
   font-size: 0.8rem;
   font-weight: 700;
 }
 
 .path-node span {
-  order: 1;
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
 }
 
 .path-node::before {
-  display: block;
-  width: 7rem;
-  height: 3.6rem;
-  order: 2;
+  position: absolute;
+  inset: 0;
   border: 1px solid #8aa0aa;
   border-radius: var(--radius);
   background: transparent;
@@ -965,7 +966,7 @@ h3 {
     min-height: 20rem;
   }
 
-  .path-node::before {
+  .path-node {
     width: 5.6rem;
     height: 3.2rem;
   }
