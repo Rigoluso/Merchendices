@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { request as httpRequest } from "node:http";
 import test from "node:test";
 
-import { buildMessage, createMailServer } from "../mail-api/server.mjs";
+import { buildMessage, createMailServer, createRateLimiter } from "../mail-api/server.mjs";
 
 const env = {
   SMTP_USER: "merchendice@gmail.com",
@@ -90,6 +90,24 @@ test("missing or invalid required fields return 400 without sending", async () =
   assert.equal(sends, 0);
 });
 
+test("malformed field types return 400 and do not stop the server", async () => {
+  let sends = 0;
+  await withServer({ transport: { sendMail: async () => { sends += 1; } } }, async (server) => {
+    const malformed = await send(server, {
+      headers: { "content-type": "application/json", origin: "https://merchendice.com" },
+      body: { ...validPayload, name: { toString: 1 } },
+    });
+    assert.equal(malformed.status, 400);
+
+    const healthy = await send(server, {
+      headers: { "content-type": "application/json", origin: "https://merchendice.com" },
+      body: validPayload,
+    });
+    assert.equal(healthy.status, 200);
+  });
+  assert.equal(sends, 1);
+});
+
 test("a filled honeypot returns 400 without sending", async () => {
   let sends = 0;
   await withServer({ transport: { sendMail: async () => { sends += 1; } } }, async (server) => {
@@ -127,6 +145,30 @@ test("rate-limited clients receive 429 without sending", async () => {
     assert.deepEqual(response, { status: 429, body: { error: "Too many requests. Please try again later." } });
   });
   assert.equal(sends, 0);
+});
+
+test("rate limiting uses the trusted client identity instead of forwarded spoofing", async () => {
+  let sends = 0;
+  await withServer({
+    transport: { sendMail: async () => { sends += 1; } },
+    rateLimiter: createRateLimiter({ limit: 5, windowMs: 60_000 }),
+  }, async (server) => {
+    const statuses = [];
+    for (let index = 0; index < 6; index += 1) {
+      const response = await send(server, {
+        headers: {
+          "content-type": "application/json",
+          origin: "https://merchendice.com",
+          "x-real-ip": "203.0.113.10",
+          "x-forwarded-for": `spoof-${index}`,
+        },
+        body: validPayload,
+      });
+      statuses.push(response.status);
+    }
+    assert.deepEqual(statuses, [200, 200, 200, 200, 200, 429]);
+  });
+  assert.equal(sends, 5);
 });
 
 test("transport failures return a generic 502 response", async () => {

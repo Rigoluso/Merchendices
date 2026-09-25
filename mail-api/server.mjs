@@ -22,6 +22,9 @@ export function validateSubmission(payload) {
     return { ok: false, status: 400, error: "Please provide a valid JSON submission." };
   }
 
+  if (FIELDS.some((field) => payload[field] !== undefined && payload[field] !== null && typeof payload[field] !== "string")) {
+    return { ok: false, status: 400, error: "Unable to process this submission." };
+  }
   const value = Object.fromEntries(FIELDS.map((field) => [field, trimValue(payload[field])]));
   if (value.website) return { ok: false, status: 400, error: "Unable to process this submission." };
   if (!value.name || !value.email || !value.message || !EMAIL_PATTERN.test(value.email)) {
@@ -105,7 +108,7 @@ export function createMailServer({ transport, env = process.env, rateLimiter = c
   const from = trimValue(env.SMTP_USER);
   const to = trimValue(env.MAIL_TO || env.SMTP_USER);
 
-  return createServer(async (req, res) => {
+  const handleRequest = async (req, res) => {
     const origin = trimValue(req.headers.origin);
     if (origin && origin !== allowedOrigin) {
       json(res, 403, { error: "Origin not allowed." });
@@ -131,7 +134,7 @@ export function createMailServer({ transport, env = process.env, rateLimiter = c
       return;
     }
 
-    const ip = String(req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown").split(",")[0].trim();
+    const ip = String(req.headers["x-real-ip"] || req.socket.remoteAddress || "unknown").trim();
     if (!rateLimiter.allow(ip)) {
       json(res, 429, { error: "Too many requests. Please try again later." }, origin);
       return;
@@ -160,6 +163,16 @@ export function createMailServer({ transport, env = process.env, rateLimiter = c
     }
 
     json(res, 200, { ok: true }, origin);
+  };
+
+  return createServer((req, res) => {
+    void handleRequest(req, res).catch(() => {
+      if (res.headersSent) {
+        res.end();
+        return;
+      }
+      json(res, 500, { error: "Unable to process this submission." });
+    });
   });
 }
 
