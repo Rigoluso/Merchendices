@@ -275,11 +275,6 @@ h3 {
   background: var(--paper);
 }
 
-.hero-copy {
-  position: relative;
-  z-index: 1;
-}
-
 .hero-lede {
   max-width: 38rem;
   color: var(--ink-soft);
@@ -835,31 +830,6 @@ h3 {
   color: var(--paper);
   font-size: 1.4rem;
   cursor: pointer;
-}
-
-.cookie-option {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 0;
-  border-top: 1px solid var(--line-dark);
-}
-
-.cookie-option strong,
-.cookie-option small {
-  display: block;
-}
-
-.cookie-option small {
-  margin-top: 0.25rem;
-  color: #b8c8cf;
-}
-
-.cookie-option input {
-  width: 1.3rem;
-  height: 1.3rem;
-  accent-color: var(--teal);
 }
 
 .motion-ready [data-reveal] {

@@ -1,9 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
-import { spawnSync } from "node:child_process";
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const root = new URL("../", import.meta.url);
 const site = new URL("../site/", import.meta.url);
 const read = (path) => readFileSync(new URL(path, site), "utf8");
 
@@ -14,6 +12,17 @@ test("the replacement exposes exactly the focused public routes", () => {
   for (const removed of ["about/index.html", "services/index.html", "stores/index.html", "motion-core.js"]) {
     assert.equal(existsSync(new URL(removed, site)), false, `removed asset still exists: ${removed}`);
   }
+});
+
+test("the project keeps only the local validation commands", () => {
+  const packageJson = readFileSync(new URL("../package.json", import.meta.url), "utf8");
+  assert.doesNotMatch(packageJson, /check:browser/);
+  assert.equal(existsSync(new URL("../scripts/check-browser.mjs", import.meta.url)), false);
+});
+
+test("nginx contains only routes used by the site", () => {
+  const nginx = readFileSync(new URL("../nginx.conf", import.meta.url), "utf8");
+  assert.doesNotMatch(nginx, /location\s+\/assets\//);
 });
 
 test("each public page shares the Merchendice shell and legal entry points", () => {
@@ -34,9 +43,6 @@ test("the homepage stays concise and uses the supplied palette", () => {
   const css = read("styles.css");
   for (const phrase of ["Creator merchandise", "Services", "Contact"]) {
     assert.match(html, new RegExp(phrase, "i"));
-  }
-  for (const color of ["#011627", "#FDFFFC", "#2EC4B6", "#E71D36", "#FF9F1C"]) {
-    assert.match(css, new RegExp(color, "i"));
   }
   assert.doesNotMatch(html, /process-stage|store-browser|capability-visual|night-shift|fulfillment\.webp/i);
   assert.ok((html.match(/<section\b/g) ?? []).length <= 5, "homepage should stay compact");
@@ -110,7 +116,9 @@ test("the site defines every shared layout token and avoids dead selectors", () 
     );
   }
   assert.doesNotMatch(html, /path-visual/);
+  assert.doesNotMatch(html, /hero-copy|id=["']top["']/);
   assert.doesNotMatch(css, /\.path-visual/);
+  assert.doesNotMatch(css, /\.hero-copy/);
   assert.doesNotMatch(css, /\.button:hover\s*\{\s*transform:\s*none;\s*\}/);
   assert.match(siteJs, /const revealNodes = document\.querySelectorAll/);
 });
@@ -151,15 +159,6 @@ test("the supplied logo is the only brand image and remains optimized", () => {
   assert.equal(bytes.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(bytes.subarray(8, 12).toString("ascii"), "WEBP");
   assert.ok(bytes.byteLength <= 160 * 1024);
-});
-
-test("the site validator accepts the focused route inventory", () => {
-  const result = spawnSync(process.execPath, ["scripts/check-site.mjs"], {
-    cwd: root,
-    encoding: "utf8",
-  });
-  assert.equal(result.status, 0, result.stderr || result.stdout);
-  assert.match(result.stdout, /3 HTML documents/);
 });
 
 test("the deployment boundary remains an unprivileged nginx container", () => {

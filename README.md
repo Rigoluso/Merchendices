@@ -9,7 +9,7 @@ A focused static site for creator-led product projects. Merchendice helps turn a
 
 The contact form sends a creator enquiry through the private `mail-api` service to `merchendices@gmail.com`. It asks for a name, email, YouTube, Instagram, TikTok, other platforms, and a project brief. The visitor stays on the site and sees an inline delivery status.
 
-Cookie controls store only the visitor's consent decision in local storage. Optional analytics remain off unless accepted, and the site does not currently load an analytics provider.
+Cookie controls store only the visitor's essential notice decision in local storage. The site does not load analytics or advertising cookies.
 
 ## Run with Docker
 
@@ -78,13 +78,3 @@ node scripts/check-site.mjs
 ```
 
 The API tests use a fake mail transport, so they do not send real messages. Never commit a real `.env` or App Password.
-
-The optional browser check requires Playwright and Chromium:
-
-```sh
-npm install --no-save --package-lock=false playwright
-npx playwright install chromium
-npm run check:browser
-```
-
-It checks all three routes at 320, 390, 768, and 1440 pixels, overflow safety, cookie settings, contact navigation, and the no-JavaScript content baseline. Set `PLAYWRIGHT_MODULE_PATH` or `BROWSER_EXECUTABLE` to use an existing local installation.

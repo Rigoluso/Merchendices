@@ -20,25 +20,21 @@ function createStorage(initialValue = null) {
 test("readConsent returns null for missing and malformed decisions", () => {
   assert.equal(readConsent(createStorage()), null);
   assert.equal(readConsent(createStorage("not-json")), null);
-  assert.equal(readConsent(createStorage('{"analytics":"yes"}')), null);
+  assert.equal(readConsent(createStorage('{"legacy":"yes"}')), null);
 });
 
-test("normalizeConsent always keeps essential storage enabled", () => {
+test("normalizeConsent keeps only a valid decision timestamp", () => {
   assert.deepEqual(
-    normalizeConsent({ essential: false, analytics: true, decidedAt: "2026-09-17T10:00:00.000Z" }),
-    { essential: true, analytics: true, decidedAt: "2026-09-17T10:00:00.000Z" },
+    normalizeConsent({ legacy: false, decidedAt: "2026-09-17T10:00:00.000Z" }),
+    { decidedAt: "2026-09-17T10:00:00.000Z" },
   );
 });
 
-test("writeConsent records accepted and rejected non-essential storage", () => {
-  const acceptedStorage = createStorage();
-  const rejectedStorage = createStorage();
+test("writeConsent stores only the essential decision", () => {
+  const storage = createStorage();
 
-  const accepted = writeConsent(acceptedStorage, true, "2026-09-17T10:00:00.000Z");
-  const rejected = writeConsent(rejectedStorage, false, "2026-09-17T10:01:00.000Z");
+  const consent = writeConsent(storage, "2026-09-17T10:00:00.000Z");
 
-  assert.deepEqual(readConsent(acceptedStorage), accepted);
-  assert.equal(accepted.analytics, true);
-  assert.deepEqual(readConsent(rejectedStorage), rejected);
-  assert.equal(rejected.analytics, false);
+  assert.deepEqual(consent, { decidedAt: "2026-09-17T10:00:00.000Z" });
+  assert.deepEqual(readConsent(storage), consent);
 });
