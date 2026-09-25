@@ -22,7 +22,14 @@ export function validateSubmission(payload) {
     return { ok: false, status: 400, error: "Please provide a valid JSON submission." };
   }
 
-  if (FIELDS.some((field) => payload[field] !== undefined && payload[field] !== null && typeof payload[field] !== "string")) {
+  if (
+    FIELDS.some(
+      (field) =>
+        payload[field] !== undefined &&
+        payload[field] !== null &&
+        typeof payload[field] !== "string",
+    )
+  ) {
     return { ok: false, status: 400, error: "Unable to process this submission." };
   }
   const value = Object.fromEntries(FIELDS.map((field) => [field, trimValue(payload[field])]));
@@ -144,7 +151,17 @@ export function createMailServer({ transport, env = process.env, rateLimiter = c
     try {
       payload = await readJson(req);
     } catch (error) {
-      json(res, error.status || 400, { error: error.status === 413 ? "Submission is too large." : "Please provide a valid JSON submission." }, origin);
+      json(
+        res,
+        error.status || 400,
+        {
+          error:
+            error.status === 413
+              ? "Submission is too large."
+              : "Please provide a valid JSON submission.",
+        },
+        origin,
+      );
       return;
     }
 

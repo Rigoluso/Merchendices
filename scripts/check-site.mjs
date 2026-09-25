@@ -75,8 +75,13 @@ if (/mailto:|window\.location/.test(contactScript)) {
 }
 
 const nginxConfig = readFileSync(resolve(root, "nginx.conf"), "utf8");
-if (!/location\s*=\s*\/api\/contact/.test(nginxConfig) || !/proxy_pass\s+http:\/\/mail-api:3000\/contact/.test(nginxConfig)) {
+if (
+  !/location\s*=\s*\/api\/contact/.test(nginxConfig) ||
+  !/proxy_pass\s+http:\/\/mail-api:3000\/contact/.test(nginxConfig)
+) {
   throw new Error("Nginx is missing the private contact API proxy");
 }
 
-console.log(`Merchendice site validated: ${htmlFiles.length} HTML documents and ${referenceCount} local references checked.`);
+console.log(
+  `Merchendice site validated: ${htmlFiles.length} HTML documents and ${referenceCount} local references checked.`,
+);

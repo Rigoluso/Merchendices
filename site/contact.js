@@ -39,7 +39,8 @@ if (typeof document !== "undefined") {
     const validation = validateContactValues(payload);
 
     if (!validation.valid) {
-      status.textContent = "Please add your name, a valid email, and a short project brief.";
+      status.textContent =
+        "Please add your name, a valid email, and a short project brief.";
       status.dataset.state = "error";
       form.querySelector(`[name="${validation.missing[0]}"]`)?.focus();
       return;
@@ -56,7 +57,9 @@ if (typeof document !== "undefined") {
         body: JSON.stringify(payload),
       });
       const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(result.error || "Unable to send your enquiry.");
+      if (!response.ok) {
+        throw new Error(result.error || "Unable to send your enquiry.");
+      }
       status.textContent = "Message sent. We will reply by email.";
       status.dataset.state = "success";
     } catch {

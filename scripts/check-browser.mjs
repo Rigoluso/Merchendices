@@ -13,7 +13,16 @@ const server = createServer(async (req, res) => {
     let file = path.join(root, new URL(req.url, "http://localhost").pathname);
     if (!file.startsWith(root)) throw Error("Invalid path");
     if ((await stat(file)).isDirectory()) file = path.join(file, "index.html");
-    res.setHeader("Content-Type", ({ ".js": "text/javascript", ".css": "text/css", ".html": "text/html", ".webp": "image/webp" })[path.extname(file)] || "text/plain");
+    const contentTypes = {
+      ".js": "text/javascript",
+      ".css": "text/css",
+      ".html": "text/html",
+      ".webp": "image/webp",
+    };
+    res.setHeader(
+      "Content-Type",
+      contentTypes[path.extname(file)] || "text/plain",
+    );
     res.end(await readFile(file));
   } catch {
     res.writeHead(404);
@@ -25,7 +34,11 @@ const origin = `http://127.0.0.1:${server.address().port}`;
 let browser;
 
 try {
-  browser = await chromium.launch(process.env.BROWSER_EXECUTABLE ? { executablePath: process.env.BROWSER_EXECUTABLE } : {});
+  browser = await chromium.launch(
+    process.env.BROWSER_EXECUTABLE
+      ? { executablePath: process.env.BROWSER_EXECUTABLE }
+      : {},
+  );
   const routes = ["/", "/contact/", "/terms/"];
   for (const width of [320, 390, 768, 1440]) {
     const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
@@ -43,11 +56,19 @@ try {
         return [...new Set(problems)];
       });
       assert.deepEqual(overflow, [], `${width} ${route} overflow`);
-      const rails = await page.evaluate(() => [...document.querySelectorAll(".site-header, .page-wrap")].map((element) => {
-        const box = element.getBoundingClientRect();
-        const styles = getComputedStyle(element);
-        return { left: box.left, right: box.right, paddingLeft: parseFloat(styles.paddingLeft) };
-      }));
+      const rails = await page.evaluate(() =>
+        [...document.querySelectorAll(".site-header, .page-wrap")].map(
+          (element) => {
+            const box = element.getBoundingClientRect();
+            const styles = getComputedStyle(element);
+            return {
+              left: box.left,
+              right: box.right,
+              paddingLeft: parseFloat(styles.paddingLeft),
+            };
+          },
+        ),
+      );
       const lefts = rails.map((rail) => rail.left);
       const rights = rails.map((rail) => rail.right);
       assert.ok(Math.max(...lefts) - Math.min(...lefts) <= 1, `${width} ${route} left rails drift`);

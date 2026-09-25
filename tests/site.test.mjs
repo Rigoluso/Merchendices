@@ -70,7 +70,13 @@ test("the homepage gives each palette color a visible surface role", () => {
   for (const color of ["#011627", "#FDFFFC", "#2EC4B6", "#E71D36", "#FF9F1C"]) {
     assert.match(css, new RegExp(color, "i"), color);
   }
-  for (const selector of [".offer-card-teal", ".offer-card-red", ".offer-card-amber", ".process-panel", ".contact-panel"]) {
+  for (const selector of [
+    ".offer-card-teal",
+    ".offer-card-red",
+    ".offer-card-amber",
+    ".process-panel",
+    ".contact-panel",
+  ]) {
     assert.match(css, new RegExp(selector.replace(".", "\\.")), selector);
   }
 });
@@ -81,9 +87,32 @@ test("the homepage uses a restrained studio visual system", () => {
   assert.doesNotMatch(html, /mark-ring|mark-caption|card-symbol/);
   assert.match(css, /--radius:\s*2px/);
   assert.match(css, /--surface-soft:/);
-  assert.match(css, /\.button:hover\s*\{[^}]*transform:\s*none/s);
   assert.match(css, /\.offer-card:hover\s*\{/);
   assert.doesNotMatch(css, /rotate\(/);
+});
+
+test("the site defines every shared layout token and avoids dead selectors", () => {
+  const html = read("index.html");
+  const css = read("styles.css");
+  const siteJs = read("site.js");
+
+  for (const token of [
+    "--midnight: #011627",
+    "--paper: #FDFFFC",
+    "--teal: #2EC4B6",
+    "--content-max:",
+    "--page-gutter:",
+    "--grid-gap:",
+  ]) {
+    assert.match(
+      css,
+      new RegExp(token.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"), "i"),
+    );
+  }
+  assert.doesNotMatch(html, /path-visual/);
+  assert.doesNotMatch(css, /\.path-visual/);
+  assert.doesNotMatch(css, /\.button:hover\s*\{\s*transform:\s*none;\s*\}/);
+  assert.match(siteJs, /const revealNodes = document\.querySelectorAll/);
 });
 
 test("contact page publishes every requested creator field and recipient", () => {
@@ -98,7 +127,15 @@ test("contact page publishes every requested creator field and recipient", () =>
 
 test("terms page covers the operating agreements", () => {
   const html = read("terms/index.html");
-  for (const phrase of ["Scope", "Approvals", "Production", "Shipping", "Intellectual property", "Privacy", "merchendices@gmail.com"]) {
+  for (const phrase of [
+    "Scope",
+    "Approvals",
+    "Production",
+    "Shipping",
+    "Intellectual property",
+    "Privacy",
+    "merchendices@gmail.com",
+  ]) {
     assert.match(html, new RegExp(phrase, "i"), phrase);
   }
 });

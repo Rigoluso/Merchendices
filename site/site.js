@@ -1,5 +1,5 @@
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const revealNodes = [...document.querySelectorAll("[data-reveal]")];
+const revealNodes = document.querySelectorAll("[data-reveal]");
 
 if (!reducedMotion && "IntersectionObserver" in window) {
   document.documentElement.classList.add("motion-ready");
@@ -10,7 +10,10 @@ if (!reducedMotion && "IntersectionObserver" in window) {
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12, rootMargin: "0px 0px -8%" });
+  }, {
+    threshold: 0.12,
+    rootMargin: "0px 0px -8%",
+  });
   revealNodes.forEach((node, index) => {
     node.style.setProperty("--reveal-delay", `${Math.min(index, 5) * 70}ms`);
     observer.observe(node);
