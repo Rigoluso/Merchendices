@@ -69,4 +69,14 @@ for (const path of sourceFiles) {
   if (/\b(?:TODO|TBD)\b/.test(source)) throw new Error(`Unfinished marker in site/${relative(siteRoot, path)}`);
 }
 
+const contactScript = readFileSync(resolve(siteRoot, "contact.js"), "utf8");
+if (/mailto:|window\.location/.test(contactScript)) {
+  throw new Error("Contact form must submit to the server API, not a local mail client");
+}
+
+const nginxConfig = readFileSync(resolve(root, "nginx.conf"), "utf8");
+if (!/location\s*=\s*\/api\/contact/.test(nginxConfig) || !/proxy_pass\s+http:\/\/mail-api:3000\/contact/.test(nginxConfig)) {
+  throw new Error("Nginx is missing the private contact API proxy");
+}
+
 console.log(`Merchendice site validated: ${htmlFiles.length} HTML documents and ${referenceCount} local references checked.`);
