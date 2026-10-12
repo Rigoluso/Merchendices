@@ -6,13 +6,38 @@ const site = new URL("../site/", import.meta.url);
 const read = (path) => readFileSync(new URL(path, site), "utf8");
 
 test("the replacement exposes exactly the focused public routes", () => {
-  const expected = ["index.html", "contact/index.html", "terms/index.html"];
+  const expected = ["index.html", "contact/index.html", "terms/index.html", "examplepage.com/index.html"];
   const actual = expected.filter((path) => existsSync(new URL(path, site)));
   assert.deepEqual(actual, expected);
   for (const removed of ["about/index.html", "services/index.html", "stores/index.html", "motion-core.js"]) {
     assert.equal(existsSync(new URL(removed, site)), false, `removed asset still exists: ${removed}`);
   }
 });
+
+
+test("the CREATOR example has a same-domain route and a route-scoped content policy", () => {
+  const homepage = read("index.html");
+  const example = read("examplepage.com/index.html");
+  const nginx = readFileSync(new URL("../nginx.conf", import.meta.url), "utf8");
+  const routeStart = nginx.indexOf("    location ^~ /examplepage.com/ {");
+  const routeEnd = nginx.indexOf("\n    }", routeStart);
+  const route = routeStart >= 0 && routeEnd >= 0 ? nginx.slice(routeStart, routeEnd) : "";
+  const globalPolicy = nginx.slice(0, Math.max(routeStart, 0))
+    .split("\n")
+    .find((line) => line.includes("add_header Content-Security-Policy")) ?? "";
+
+  assert.ok(homepage.includes('href="/examplepage.com/"'), "homepage should link to the same-domain example");
+  assert.ok(example.includes("<title>CREATOR — Storefront example</title>"));
+  assert.ok(example.includes("STOREFRONT EXAMPLE"));
+  assert.ok(example.includes("images-api.printify.com"));
+  assert.ok(route, "Nginx should define the example route");
+  assert.ok(route.includes("img-src 'self' data: https://images-api.printify.com"));
+  assert.ok(route.includes("style-src 'self' 'unsafe-inline'"));
+  assert.ok(route.includes("script-src 'self' 'unsafe-inline'"));
+  assert.ok(globalPolicy && !globalPolicy.includes("unsafe-inline"));
+  assert.ok(globalPolicy && !globalPolicy.includes("images-api.printify.com"));
+});
+
 
 test("the project keeps only the local validation commands", () => {
   const packageJson = readFileSync(new URL("../package.json", import.meta.url), "utf8");

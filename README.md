@@ -5,6 +5,7 @@ A focused static site for creator-led product projects. Merchendice helps turn a
 
 - `/` — the focused overview
 - `/contact/` — creator enquiry form
+- `/examplepage.com/` — CREATOR storefront example
 - `/terms/` — project terms and conditions
 
 The contact form sends a creator enquiry through the private `mail-api` service to `merchendices@gmail.com`. It asks for a name, email, YouTube, Instagram, TikTok, other platforms, and a project brief. The visitor stays on the site and sees an inline delivery status.
