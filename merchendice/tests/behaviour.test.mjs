@@ -26,6 +26,18 @@ test('all pages support GET and HEAD without exposing email configuration', asyn
   }
 });
 
+test('enquiry page loads the versioned form script with social-link fields', async () => {
+  const page = await worker.fetch(new Request('https://site.example.test/enquiry/'), env);
+  const html = await page.text();
+  const src = html.match(/<script\s+src="([^"]*site\.js[^"]*)"/i)?.[1];
+  assert.ok(src, 'enquiry script must be present');
+  const scriptUrl = new URL(src, 'https://site.example.test/enquiry/');
+  assert.ok(scriptUrl.search, 'form script URL must use a version to bypass stale caches');
+  const script = await worker.fetch(new Request(scriptUrl), env);
+  assert.equal(script.status, 200);
+  assert.match(await script.text(), /values\.get\('youtube'\)/);
+});
+
 test('CREATOR example is served on its Merchendice path with working inline layout and images', async () => {
   const response = await worker.fetch(new Request('https://site.example.test/examplepage.com/'));
   const html = await response.text();
