@@ -77,6 +77,29 @@ test('delivery is confirmed only when the provider returns a receipt', async t =
   assert.equal(sent.replyTo,input.email);
 });
 
+test('creator social links are included in the enquiry email', async t => {
+  let sent;
+  const provider = t.mock.method(globalThis, 'fetch', async (_url, options) => {
+    sent = JSON.parse(options.body);
+    return Response.json({id:'receipt'});
+  });
+  const response = await worker.fetch(request({...input, youtube:'https://youtube.com/@creator', instagram:'@creator', tiktok:'@creatorvideo', otherPlatforms:'twitch.tv/creator'}), env);
+  assert.equal(response.status, 200);
+  assert.match(sent.text, /https:\/\/youtube\.com\/@creator/);
+  assert.match(sent.text, /@creatorvideo/);
+  assert.match(sent.text, /twitch\.tv\/creator/);
+});
+
+test('hidden spam field rejects automated enquiries without sending mail', async () => {
+  let sent = false;
+  const response = await worker.fetch(request({...input, website:'spam.example'}), {
+    MAIL_TO: 'inbox@example.test',
+    sendMail: async () => { sent = true; return {id:'receipt'}; },
+  });
+  assert.equal(response.status, 400);
+  assert.equal(sent, false);
+});
+
 const formScript=await fs.readFile(new URL('../site.js',import.meta.url),'utf8');
 function formHarness(fetch, values=input) {
   const fields={};
@@ -96,7 +119,7 @@ function formHarness(fetch, values=input) {
     reset(){this.didReset=true;},didReset:false,
   };
   class FormDataStub {
-    get(name){return fields[name]?.value;}
+    get(name){return fields[name]?.value ?? values[name];}
     getAll(){return [];}
   }
   vm.runInNewContext(formScript,{
@@ -105,6 +128,17 @@ function formHarness(fetch, values=input) {
   });
   return {form,status,button,submit:()=>submit({preventDefault(){}})};
 }
+
+test('form submits the creator social links to the enquiry endpoint', async () => {
+  let payload;
+  const h = formHarness(async (_url, options) => {
+    payload = JSON.parse(options.body);
+    return Response.json({ok:true});
+  }, {...input, youtube:'https://youtube.com/@creator', instagram:'@creator'});
+  await h.submit();
+  assert.equal(payload.youtube, 'https://youtube.com/@creator');
+  assert.equal(payload.instagram, '@creator');
+});
 
 test('HTML or incomplete success responses do not clear the form or claim delivery', async () => {
   for (const response of [new Response('<html>Sign in</html>'),Response.json({}),Response.json(null)]) {

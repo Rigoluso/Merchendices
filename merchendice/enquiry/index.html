@@ -27,6 +27,7 @@
         </div>
         <div class="form-panel">
           <form id="enquiryForm" novalidate>
+            <div hidden aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
             <div class="form-row">
               <div class="field">
                 <label for="name">Name <span>*</span></label>
@@ -47,6 +48,13 @@
                 <label class="check-option"><input type="checkbox" name="platforms" value="Other platforms"><span>Other platforms</span></label>
               </div>
             </fieldset>
+            <p class="field-hint">Optional — add your channel links or handles so we can find your work.</p>
+            <div class="form-row social-links">
+              <div class="field"><label for="youtube">YouTube</label><input id="youtube" name="youtube" type="text" maxlength="500" placeholder="Channel link or handle"></div>
+              <div class="field"><label for="instagram">Instagram</label><input id="instagram" name="instagram" type="text" maxlength="500" placeholder="Profile link or handle"></div>
+              <div class="field"><label for="tiktok">TikTok</label><input id="tiktok" name="tiktok" type="text" maxlength="500" placeholder="Profile link or handle"></div>
+              <div class="field"><label for="otherPlatforms">Other platforms</label><input id="otherPlatforms" name="otherPlatforms" type="text" maxlength="500" placeholder="Other links or handles"></div>
+            </div>
             <div class="field description-field">
               <label for="description">Project description <span>*</span></label>
               <p class="field-hint" id="descriptionHint">Tell us what you have in mind. Add a channel link or handle here if you’d like us to see your work.</p>

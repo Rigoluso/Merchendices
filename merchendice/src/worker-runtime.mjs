@@ -79,6 +79,14 @@ export default {
     const name = typeof input?.name === 'string' ? input.name.trim() : '';
     const email = typeof input?.email === 'string' ? input.email.trim() : '';
     const description = typeof input?.description === 'string' ? input.description.trim() : '';
+    if (input?.website != null && (typeof input.website !== 'string' || input.website.trim())) {
+      return json({ message: 'Please check the form and try again.' }, 400);
+    }
+    const socialFields = ['youtube', 'instagram', 'tiktok', 'otherPlatforms'];
+    if (socialFields.some(field => input?.[field] != null && (typeof input[field] !== 'string' || input[field].length > 500))) {
+      return json({ message: 'Please check your social links and try again.' }, 400);
+    }
+    const social = Object.fromEntries(socialFields.map(field => [field, (input?.[field] || '').trim()]));
     const platforms = Array.isArray(input?.platforms)
       ? [...new Set(input.platforms.filter((value) => PLATFORM_OPTIONS.has(value)))].slice(0, 4)
       : [];
@@ -96,6 +104,10 @@ export default {
       `Name: ${name}`,
       `Email: ${email}`,
       `Where to find them: ${platforms.length ? platforms.join(', ') : 'Not provided'}`,
+      `YouTube: ${social.youtube || 'Not provided'}`,
+      `Instagram: ${social.instagram || 'Not provided'}`,
+      `TikTok: ${social.tiktok || 'Not provided'}`,
+      `Other platforms: ${social.otherPlatforms || 'Not provided'}`,
       '',
       'Project description:',
       description,

@@ -102,6 +102,7 @@ h1, h2, h3, p { margin-top: 0; }
 .form-panel { padding: 33px clamp(21px, 4vw, 48px); background: var(--paper); color: var(--ink); box-shadow: 10px 10px 0 #540b0e2e; }
 #enquiryForm { scroll-margin-top: 18px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 17px; }
+.social-links { margin-bottom: 24px; }
 .field label, .platform-field legend { display: block; margin: 0 0 8px; font-size: 14px; font-weight: 700; }
 .field label span { color: var(--red); }
 .field input, .field textarea { width: 100%; min-height: 48px; padding: 12px 13px; border: 1px solid #bcb8aa; border-radius: 2px; background: white; color: var(--ink); }
