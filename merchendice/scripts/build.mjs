@@ -12,9 +12,10 @@ const assetFiles = {
   '/examplepage.com': ['examplepage.com/index.html', 'text/html; charset=utf-8'],
   '/site.css': ['site.css', 'text/css; charset=utf-8'],
   '/site.js': ['site.js', 'text/javascript; charset=utf-8'],
+  '/examples/concepts.css': ['examples/concepts.css', 'text/css; charset=utf-8'],
   '/examples.js': ['examples.js', 'text/javascript; charset=utf-8'],
 };
-for (const page of ['products', 'creator-guide']) {
+for (const page of ['products', 'creator-guide', 'examples/field-notes', 'examples/signal-room', 'examples/paper-table']) {
   for (const route of [`/${page}`, `/${page}/`]) {
     assetFiles[route] = [`${page}/index.html`, 'text/html; charset=utf-8'];
   }
