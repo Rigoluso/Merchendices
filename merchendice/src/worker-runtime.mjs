@@ -32,10 +32,8 @@ function json(data, status = 200) {
   });
 }
 
-function textResponse(body, contentType, status = 200, { creatorExample = false } = {}) {
-  const contentSecurityPolicy = creatorExample
-    ? "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images-api.printify.com; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'"
-    : "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'";
+function textResponse(body, contentType, status = 200) {
+  const contentSecurityPolicy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'";
   return new Response(body, {
     status,
     headers: {
@@ -64,7 +62,7 @@ export default {
       if (request.method === 'GET') {
         body = asset.base64 ? Uint8Array.from(atob(asset.base64), char => char.charCodeAt(0)) : asset.body;
       }
-      return textResponse(body, asset.type, 200, { creatorExample: isCreatorExample });
+      return textResponse(body, asset.type, 200);
     }
     if (request.method !== 'POST' || url.pathname !== '/api/enquiry') {
       return new Response('Not found', { status: 404, headers: { 'cache-control': 'no-store' } });

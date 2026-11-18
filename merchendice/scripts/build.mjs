@@ -2,6 +2,8 @@ import fs from 'node:fs/promises';
 
 const assetFiles = {
   '/': ['index.html', 'text/html; charset=utf-8'],
+  '/design-examples/': ['products/index.html', 'text/html; charset=utf-8'],
+  '/design-examples': ['products/index.html', 'text/html; charset=utf-8'],
   '/examples/': ['examples/index.html', 'text/html; charset=utf-8'],
   '/examples': ['examples/index.html', 'text/html; charset=utf-8'],
   '/enquiry/': ['enquiry/index.html', 'text/html; charset=utf-8'],

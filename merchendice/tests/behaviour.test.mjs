@@ -38,14 +38,13 @@ test('enquiry page loads the versioned form script with social-link fields', asy
   assert.match(await script.text(), /values\.get\('youtube'\)/);
 });
 
-test('CREATOR example is served on its Merchendice path with working inline layout and images', async () => {
+test('CREATOR example is served on its Merchendice path as a static design preview', async () => {
   const response = await worker.fetch(new Request('https://site.example.test/examplepage.com/'));
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /CREATOR — Storefront example/);
-  assert.match(html, /images-api\.printify\.com/);
-  assert.match(response.headers.get('content-security-policy'), /script-src 'self' 'unsafe-inline'/);
-  assert.match(response.headers.get('content-security-policy'), /img-src[^;]*images-api\.printify\.com/);
+  assert.match(html, /src="\/photos\/finch-hoodie.jpg"/);
+  assert.doesNotMatch(html, /add to bag|checkout|class="price"|shop the collection/i);
   const nested = await worker.fetch(new Request('https://site.example.test/examplepage.com/products/sample'));
   assert.equal(nested.status, 200);
   const directory = await worker.fetch(new Request('https://site.example.test/examples/'));
@@ -204,7 +203,7 @@ test('directory matches multiple words in any order and restores the empty state
 });
 
 test('lookbook and guide are reachable and product photos are served byte-for-byte', async () => {
-  for (const route of ['/creator-guide/', '/products/']) {
+  for (const route of ['/creator-guide/', '/design-examples/', '/products/']) {
     const page = await worker.fetch(new Request('https://site.example.test' + route));
     assert.equal(page.status, 200);
     assert.match(await page.text(), /href="\/enquiry\/"/);
