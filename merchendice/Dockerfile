@@ -4,9 +4,7 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
 COPY scripts ./scripts
 COPY src ./src
-COPY index.html site.css site.js examples.js ./
-COPY examples ./examples
-COPY examplepage.com ./examplepage.com
+COPY index.html site.css site.js ./
 COPY enquiry ./enquiry
 COPY photos ./photos
 COPY products ./products

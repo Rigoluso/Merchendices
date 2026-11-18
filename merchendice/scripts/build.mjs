@@ -4,18 +4,12 @@ const assetFiles = {
   '/': ['index.html', 'text/html; charset=utf-8'],
   '/design-examples/': ['products/index.html', 'text/html; charset=utf-8'],
   '/design-examples': ['products/index.html', 'text/html; charset=utf-8'],
-  '/examples/': ['examples/index.html', 'text/html; charset=utf-8'],
-  '/examples': ['examples/index.html', 'text/html; charset=utf-8'],
   '/enquiry/': ['enquiry/index.html', 'text/html; charset=utf-8'],
   '/enquiry': ['enquiry/index.html', 'text/html; charset=utf-8'],
-  '/examplepage.com/': ['examplepage.com/index.html', 'text/html; charset=utf-8'],
-  '/examplepage.com': ['examplepage.com/index.html', 'text/html; charset=utf-8'],
   '/site.css': ['site.css', 'text/css; charset=utf-8'],
   '/site.js': ['site.js', 'text/javascript; charset=utf-8'],
-  '/examples/concepts.css': ['examples/concepts.css', 'text/css; charset=utf-8'],
-  '/examples.js': ['examples.js', 'text/javascript; charset=utf-8'],
 };
-for (const page of ['products', 'creator-guide', 'examples/field-notes', 'examples/signal-room', 'examples/paper-table']) {
+for (const page of ['products', 'creator-guide']) {
   for (const route of [`/${page}`, `/${page}/`]) {
     assetFiles[route] = [`${page}/index.html`, 'text/html; charset=utf-8'];
   }

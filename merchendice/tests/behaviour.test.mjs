@@ -15,7 +15,7 @@ const input = {name:'A creator',email:'creator@example.test',platforms:['YouTube
 const request = (value, headers={}) => new Request('https://site.example.test/api/enquiry', {method:'POST',headers:{'content-type':'application/json',...headers},body:JSON.stringify(value)});
 
 test('all pages support GET and HEAD without exposing email configuration', async () => {
-  for (const route of ['/', '/examples', '/examples/', '/enquiry', '/enquiry/', '/examplepage.com', '/examplepage.com/']) {
+  for (const route of ['/', '/enquiry', '/enquiry/', '/design-examples/', '/creator-guide/']) {
     const get = await worker.fetch(new Request(`https://site.example.test${route}`),env);
     assert.equal(get.status,200);
     assert.equal((await get.text()).includes(env.MAIL_TO),false);
@@ -38,18 +38,13 @@ test('enquiry page loads the versioned form script with social-link fields', asy
   assert.match(await script.text(), /values\.get\('youtube'\)/);
 });
 
-test('CREATOR example is served on its Merchendice path as a static design preview', async () => {
-  const response = await worker.fetch(new Request('https://site.example.test/examplepage.com/'));
-  const html = await response.text();
-  assert.equal(response.status, 200);
-  assert.match(html, /CREATOR — Storefront example/);
-  assert.match(html, /src="\/photos\/finch-hoodie.jpg"/);
-  assert.doesNotMatch(html, /add to bag|checkout|class="price"|shop the collection/i);
-  const nested = await worker.fetch(new Request('https://site.example.test/examplepage.com/products/sample'));
-  assert.equal(nested.status, 200);
-  const directory = await worker.fetch(new Request('https://site.example.test/examples/'));
-  assert.match(await directory.text(), /href="\/examplepage\.com\/"/);
-  assert.doesNotMatch(response.headers.get('content-security-policy'), /unsafe-eval/);
+test('former website previews return 404 and are absent from the homepage', async () => {
+  for (const route of ['/examples/', '/examples/field-notes/', '/examplepage.com/']) {
+    const response = await worker.fetch(new Request('https://site.example.test' + route));
+    assert.equal(response.status, 404);
+  }
+  const homepage = await worker.fetch(new Request('https://site.example.test/'));
+  assert.doesNotMatch(await homepage.text(), /href="\/(?:examples|examplepage\.com)\//);
 });
 
 test('invalid enquiries and cross-site submissions never call the email provider', async t => {
@@ -184,22 +179,6 @@ test('repeated submit events do not send a second request while one is pending',
   assert.equal(calls,1);
   resolve(Response.json({ok:true}));
   await pending;
-});
-
-test('directory matches multiple words in any order and restores the empty state', async () => {
-  const search={value:'merch CREATOR',addEventListener(name,handler){this.update=handler;}};
-  const card={dataset:{search:'creator storefront merch sample',kind:'example'},hidden:false};
-  const count={},kind={},empty={};
-  vm.runInNewContext(await fs.readFile(new URL('../examples.js',import.meta.url),'utf8'),{
-    document:{cookie:'',querySelector:s=>s==='#exampleSearch'?search:s==='#directoryResultCount'?count:s==='#directoryResultKind'?kind:empty,querySelectorAll:s=>s==='.listing-card'?[card]:[]},
-    window:{addEventListener(){}},
-  });
-  assert.equal(card.hidden,false);
-  assert.equal(count.textContent,'1 storefront');
-  search.value='unlisted'; search.update();
-  assert.equal(card.hidden,true); assert.equal(empty.hidden,false);
-  search.value=''; search.update();
-  assert.equal(card.hidden,false); assert.equal(empty.hidden,true);
 });
 
 test('lookbook and guide are reachable and product photos are served byte-for-byte', async () => {

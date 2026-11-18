@@ -54,10 +54,8 @@ function validEmail(value) {
 export default {
   async fetch(request, env = {}) {
     const url = new URL(request.url);
-    const isCreatorExample = url.pathname === '/examplepage.com'
-      || url.pathname.startsWith('/examplepage.com/');
-    if (['GET', 'HEAD'].includes(request.method) && (ASSETS[url.pathname] || isCreatorExample)) {
-      const asset = ASSETS[url.pathname] || ASSETS['/examplepage.com/'];
+    if (['GET', 'HEAD'].includes(request.method) && Object.hasOwn(ASSETS, url.pathname)) {
+      const asset = ASSETS[url.pathname];
       let body = null;
       if (request.method === 'GET') {
         body = asset.base64 ? Uint8Array.from(atob(asset.base64), char => char.charCodeAt(0)) : asset.body;
