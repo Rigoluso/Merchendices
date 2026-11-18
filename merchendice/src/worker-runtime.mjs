@@ -60,7 +60,11 @@ export default {
       || url.pathname.startsWith('/examplepage.com/');
     if (['GET', 'HEAD'].includes(request.method) && (ASSETS[url.pathname] || isCreatorExample)) {
       const asset = ASSETS[url.pathname] || ASSETS['/examplepage.com/'];
-      return textResponse(request.method === 'HEAD' ? null : asset.body, asset.type, 200, { creatorExample: isCreatorExample });
+      let body = null;
+      if (request.method === 'GET') {
+        body = asset.base64 ? Uint8Array.from(atob(asset.base64), char => char.charCodeAt(0)) : asset.body;
+      }
+      return textResponse(body, asset.type, 200, { creatorExample: isCreatorExample });
     }
     if (request.method !== 'POST' || url.pathname !== '/api/enquiry') {
       return new Response('Not found', { status: 404, headers: { 'cache-control': 'no-store' } });

@@ -202,3 +202,16 @@ test('directory matches multiple words in any order and restores the empty state
   search.value=''; search.update();
   assert.equal(card.hidden,false); assert.equal(empty.hidden,true);
 });
+
+test('lookbook and guide are reachable and product photos are served byte-for-byte', async () => {
+  for (const route of ['/creator-guide/', '/products/']) {
+    const page = await worker.fetch(new Request('https://site.example.test' + route));
+    assert.equal(page.status, 200);
+    assert.match(await page.text(), /href="\/enquiry\/"/);
+  }
+  for (const file of await fs.readdir('photos')) {
+    const image = await worker.fetch(new Request('https://site.example.test/photos/' + file));
+    assert.equal(image.headers.get('content-type'), 'image/jpeg');
+    assert.deepEqual(Buffer.from(await image.arrayBuffer()), await fs.readFile('photos/' + file));
+  }
+});

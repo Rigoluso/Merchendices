@@ -8,6 +8,9 @@ COPY index.html site.css site.js examples.js ./
 COPY examples ./examples
 COPY examplepage.com ./examplepage.com
 COPY enquiry ./enquiry
+COPY photos ./photos
+COPY products ./products
+COPY creator-guide ./creator-guide
 RUN npm run build
 
 FROM node:24-alpine
