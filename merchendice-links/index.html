@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Visit Merchendice and find us on TikTok, Instagram, and YouTube.">
-  <meta name="theme-color" content="#2b2a28">
+  <meta name="theme-color" content="#f8f3eb">
   <title>Merchendice Links</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,130 +13,151 @@
     :root {
       color-scheme: light;
       --paper: #f8f3eb;
-      --surface: #fbf7f1;
+      --surface: #fdf9f3;
       --ink: #2b2a28;
       --muted: #5e5c58;
-      --line: #c9c0b3;
+      --line: #c9bcad;
       --accent: #b03a26;
       --accent-hover: #8c2e20;
       --on-accent: #fff8f2;
       --serif: "Cormorant Garamond", Garamond, Georgia, serif;
       --sans: "DM Sans", "Helvetica Neue", Arial, sans-serif;
-      --gutter: clamp(1.25rem, 5vw, 3rem);
     }
 
     * { box-sizing: border-box; }
-    body { margin: 0; background: var(--paper); color: var(--ink); font: 1.0625rem/1.65 var(--sans); }
-    a { color: inherit; }
-    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-
-    .site-header { background: var(--ink); color: var(--paper); }
-    .header-inner {
-      display: flex;
-      align-items: center;
-      width: min(100% - var(--gutter) * 2, 75rem);
-      min-height: 4.25rem;
-      margin-inline: auto;
-    }
-    .wordmark {
-      display: inline-flex;
-      align-items: center;
-      min-height: 44px;
-      font: 600 1.55rem/1 var(--serif);
-      letter-spacing: .16em;
-      text-transform: uppercase;
-    }
-
-    main {
-      display: grid;
-      grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
-      grid-template-areas: "intro links" "photos links";
-      align-items: start;
-      column-gap: clamp(2.5rem, 7vw, 6.5rem);
-      row-gap: 1.9rem;
-      width: min(100% - var(--gutter) * 2, 65rem);
-      margin-inline: auto;
-      padding-block: clamp(3rem, 8vw, 6.5rem);
-    }
-
-    .intro { grid-area: intro; }
-    h1 {
-      max-width: 12ch;
+    body {
+      min-height: 100vh;
       margin: 0;
-      font: 500 clamp(3.2rem, 6.5vw, 5rem)/.99 var(--serif);
-      letter-spacing: -.015em;
-      text-wrap: balance;
+      border-top: .35rem solid var(--accent);
+      background: radial-gradient(ellipse at top, #eee1d1, transparent 24rem) no-repeat, var(--paper);
+      color: var(--ink);
+      font: 1rem/1.55 var(--sans);
     }
-    .intro p { margin: 1.1rem 0 0; color: var(--muted); }
+    main {
+      width: min(100% - 2rem, 34rem);
+      margin-inline: auto;
+      padding-block: clamp(2.25rem, 6vw, 4.25rem) 3rem;
+    }
+    .profile { margin-bottom: 2rem; text-align: center; }
+    .profile-photo {
+      display: block;
+      width: 6.5rem;
+      height: 6.5rem;
+      margin: 0 auto .95rem;
+      border: 3px solid var(--paper);
+      border-radius: 50%;
+      outline: 1px solid var(--accent);
+      background: #d4cbbe;
+      object-fit: cover;
+      object-position: 48% 40%;
+    }
+    h1 {
+      margin: 0;
+      font: 600 clamp(3rem, 10vw, 4.25rem)/1 var(--serif);
+      letter-spacing: -.035em;
+    }
+    .profile p { margin: .45rem 0 0; color: var(--muted); }
 
-    .links { grid-area: links; align-self: center; }
-    .links ul { margin: 0; padding: 0; list-style: none; }
-    .links li + li { border-bottom: 1px solid var(--line); }
+    ul { display: grid; gap: .7rem; margin: 0; padding: 0; list-style: none; }
     .link {
       display: flex;
       align-items: center;
-      min-height: 3.75rem;
-      padding: .7rem 1rem;
-      font-weight: 500;
+      gap: .95rem;
+      min-height: 4.4rem;
+      padding: .65rem .85rem;
+      border: 1px solid var(--line);
+      border-radius: .35rem;
+      background: var(--surface);
+      color: inherit;
       text-decoration: none;
+      transition: background-color .18s ease, border-color .18s ease;
     }
-    .link:hover { color: var(--accent-hover); background: var(--surface); }
-    .link.primary {
-      justify-content: center;
-      min-height: 3.5rem;
-      margin-bottom: .9rem;
-      border-radius: 4px;
-      background: var(--accent);
-      color: var(--on-accent);
-      font-weight: 600;
-    }
-    .link.primary:hover { background: var(--accent-hover); }
+    .link:hover { border-color: var(--accent); background: #f3e8da; }
+    .link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .link.primary { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
+    .link.primary:hover { border-color: var(--accent-hover); background: var(--accent-hover); }
+    .link-name { display: block; font-weight: 600; }
+    .link-detail { display: block; color: var(--muted); font-size: .875rem; }
+    .primary .link-detail { color: inherit; }
 
-    .photos { grid-area: photos; display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; margin: 0; }
-    .photos img {
-      display: block;
-      width: 100%;
-      height: clamp(8rem, 18vw, 12.5rem);
-      object-fit: cover;
-      background: #e9e1d4;
+    .icon {
+      position: relative;
+      display: grid;
+      flex: 0 0 2.5rem;
+      height: 2.5rem;
+      place-items: center;
+      border-radius: .2rem;
+      background: #eee3d7;
+      color: var(--accent-hover);
+    }
+    .primary .icon { background: var(--on-accent); font: 600 1.65rem/1 var(--serif); }
+    .music { font-size: 1.65rem; font-weight: 600; line-height: 1; }
+    .camera::before {
+      content: "";
+      width: 1.05rem;
+      height: 1.05rem;
+      border: 2px solid currentColor;
+      border-radius: .32rem;
+    }
+    .camera::after {
+      position: absolute;
+      content: "";
+      width: .35rem;
+      height: .35rem;
+      border: 1.5px solid currentColor;
+      border-radius: 50%;
+      box-shadow: .34rem -.34rem 0 -.19rem currentColor;
+    }
+    .video::before { content: ""; width: 1.22rem; height: .85rem; border-radius: .24rem; background: currentColor; }
+    .video::after {
+      position: absolute;
+      content: "";
+      margin-left: .12rem;
+      border-block: .19rem solid transparent;
+      border-left: .32rem solid #eee3d7;
     }
 
-    @media (max-width: 700px) {
-      main {
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-areas: "intro" "links" "photos";
-        row-gap: 1.6rem;
-      }
-      .link { padding-inline: .75rem; }
+    @media (prefers-reduced-motion: reduce) {
+      .link { transition: none; }
     }
   </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-inner">
-      <span class="wordmark">Merchendice</span>
-    </div>
-  </header>
-
   <main>
-    <div class="intro">
-      <h1>Merchendice links</h1>
+    <header class="profile">
+      <img class="profile-photo" src="https://merchendice.com/images/hero-tee.webp" alt="" width="104" height="104">
+      <h1>Merchendice</h1>
       <p>A merch studio for creators and influencers.</p>
-    </div>
+    </header>
 
-    <nav class="links" aria-label="Merchendice links">
+    <nav aria-label="Merchendice links">
       <ul>
-        <li><a class="link primary" href="https://merchendice.com">Visit Merchendice</a></li>
-        <li><a class="link" href="https://www.tiktok.com/@merchendices">TikTok</a></li>
-        <li><a class="link" href="https://www.instagram.com/merchendicebrand/">Instagram</a></li>
-        <li><a class="link" href="https://www.youtube.com/@Merchendice">YouTube</a></li>
+        <li>
+          <a class="link primary" href="https://merchendice.com">
+            <span class="icon" aria-hidden="true">M</span>
+            <span><span class="link-name">Visit Merchendice</span><span class="link-detail">merchendice.com</span></span>
+          </a>
+        </li>
+        <li>
+          <a class="link" href="https://www.tiktok.com/@merchendices">
+            <span class="icon music" aria-hidden="true">♪</span>
+            <span><span class="link-name">TikTok</span><span class="link-detail">@merchendices</span></span>
+          </a>
+        </li>
+        <li>
+          <a class="link" href="https://www.instagram.com/merchendicebrand/">
+            <span class="icon camera" aria-hidden="true"></span>
+            <span><span class="link-name">Instagram</span><span class="link-detail">@merchendicebrand</span></span>
+          </a>
+        </li>
+        <li>
+          <a class="link" href="https://www.youtube.com/@Merchendice">
+            <span class="icon video" aria-hidden="true"></span>
+            <span><span class="link-name">YouTube</span><span class="link-detail">@Merchendice</span></span>
+          </a>
+        </li>
       </ul>
     </nav>
-
-    <div class="photos" aria-hidden="true">
-      <img src="https://merchendice.com/images/photo-tote-360.webp" alt="" width="360" height="450">
-      <img src="https://merchendice.com/images/hero-tee.webp" alt="" width="720" height="900">
-    </div>
   </main>
 </body>
 </html>
