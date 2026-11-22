@@ -1,96 +1,145 @@
 <!doctype html>
 <html lang="en">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Find the Merchendice enquiry form, merch examples, demo store, and FAQs.">
-<meta name="theme-color" content="#f7f3ff">
-<title>Merchendice Links</title>
-<style>
-  :root {
-    color-scheme: light;
-    --ink: #230d30;
-    --paper: #f7f3ff;
-    --yellow: #f7fb64;
-    --purple: #ded0fa;
-    font-family: system-ui, sans-serif;
-    color: var(--ink);
-    background: var(--paper);
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background-image: radial-gradient(#58327532 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-  main { width: min(100% - 2.5rem, 35rem); margin: auto; padding: clamp(2.5rem, 7vw, 5rem) 0 3rem; }
-  header { margin-bottom: 1.65rem; }
-  .dice { height: 6.1rem; margin: 0 0 1.25rem .65rem; position: relative; width: 9rem; }
-  .die {
-    width: 5rem;
-    aspect-ratio: 1;
-    background: var(--yellow);
-    border: 2px solid var(--ink);
-    border-radius: .9rem;
-    box-shadow: 4px 5px var(--ink);
-    position: absolute;
-    transform: rotate(-13deg);
-    display: grid;
-    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-    place-items: center;
-    padding: .55rem;
-  }
-  .die.back { left: 3.75rem; top: .8rem; background: var(--purple); transform: rotate(16deg); }
-  .pip { width: .65rem; aspect-ratio: 1; border-radius: 50%; background: var(--ink); }
-  .top { grid-area: 1 / 1; }
-  .middle { grid-area: 2 / 2; }
-  .bottom { grid-area: 3 / 3; }
-  .top-right { grid-area: 1 / 3; }
-  .bottom-left { grid-area: 3 / 1; }
-  h1 { margin: 0; font-size: clamp(2.55rem, 9.6vw, 5rem); line-height: 1; font-weight: 950; letter-spacing: -.075em; }
-  header p { margin: .8rem 0 0; font-size: 1.1rem; line-height: 1.5; font-weight: 550; }
-  ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .85rem; }
-  .card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: .75rem;
-    min-height: 4.15rem;
-    padding: .75rem 1.05rem;
-    color: inherit;
-    text-decoration: none;
-    background: #fff;
-    border: 2px solid var(--ink);
-    border-radius: .75rem;
-    box-shadow: 4px 4px var(--ink);
-  }
-  .card.primary { background: var(--yellow); }
-  .card:hover { background: var(--purple); }
-  .card strong { display: block; font-weight: 800; font-size: 1.06rem; }
-  .card small { display: block; font-size: .875rem; margin-top: .15rem; }
-  .card::after { content: "+"; font: 700 1.6rem/1 system-ui, sans-serif; }
-  a:focus-visible { outline: 3px solid #7133bb; outline-offset: 5px; }
-  footer { margin-top: 1.9rem; font-size: .875rem; }
-  footer a { color: inherit; font-weight: 700; text-underline-offset: .23em; }
-</style>
-<main>
-  <header>
-    <div class="dice" aria-hidden="true">
-      <div class="die back"><i class="pip top"></i><i class="pip bottom"></i></div>
-      <div class="die"><i class="pip top"></i><i class="pip top-right"></i><i class="pip middle"></i><i class="pip bottom-left"></i><i class="pip bottom"></i></div>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Find the Merchendice enquiry form, merch examples, demo store, and FAQs.">
+  <meta name="theme-color" content="#2b2a28">
+  <title>Merchendice Links</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f8f3eb;
+      --surface: #fbf7f1;
+      --ink: #2b2a28;
+      --muted: #5e5c58;
+      --line: #c9c0b3;
+      --accent: #b03a26;
+      --accent-hover: #8c2e20;
+      --on-accent: #fff8f2;
+      --serif: "Cormorant Garamond", Garamond, Georgia, serif;
+      --sans: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+      --gutter: clamp(1.25rem, 5vw, 3rem);
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 1.0625rem/1.65 var(--sans); }
+    a { color: inherit; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+    .site-header a:focus-visible { outline-color: var(--paper); }
+
+    .site-header { background: var(--ink); color: var(--paper); }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      width: min(100% - var(--gutter) * 2, 75rem);
+      min-height: 4.25rem;
+      margin-inline: auto;
+    }
+    .wordmark {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      font: 600 1.55rem/1 var(--serif);
+      letter-spacing: .16em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+      grid-template-areas: "intro links" "photos links";
+      align-items: start;
+      column-gap: clamp(2.5rem, 7vw, 6.5rem);
+      row-gap: 1.9rem;
+      width: min(100% - var(--gutter) * 2, 65rem);
+      margin-inline: auto;
+      padding-block: clamp(3rem, 8vw, 6.5rem);
+    }
+
+    .intro { grid-area: intro; }
+    h1 {
+      max-width: 12ch;
+      margin: 0;
+      font: 500 clamp(3.2rem, 6.5vw, 5rem)/.99 var(--serif);
+      letter-spacing: -.015em;
+      text-wrap: balance;
+    }
+    .intro p { margin: 1.1rem 0 0; color: var(--muted); }
+
+    .links { grid-area: links; align-self: center; }
+    .links ul { margin: 0; padding: 0; list-style: none; }
+    .links li + li { border-bottom: 1px solid var(--line); }
+    .link {
+      display: flex;
+      align-items: center;
+      min-height: 3.75rem;
+      padding: .7rem 1rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .link:hover { color: var(--accent-hover); background: var(--surface); }
+    .link.primary {
+      justify-content: center;
+      min-height: 3.5rem;
+      margin-bottom: .9rem;
+      border-radius: 4px;
+      background: var(--accent);
+      color: var(--on-accent);
+      font-weight: 600;
+    }
+    .link.primary:hover { background: var(--accent-hover); }
+
+    .photos { grid-area: photos; display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; margin: 0; }
+    .photos img {
+      display: block;
+      width: 100%;
+      height: clamp(8rem, 18vw, 12.5rem);
+      object-fit: cover;
+      background: #e9e1d4;
+    }
+
+    @media (max-width: 700px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "intro" "links" "photos";
+        row-gap: 1.6rem;
+      }
+      .link { padding-inline: .75rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="https://merchendice.com/" aria-label="Merchendice home">Merchendice</a>
     </div>
-    <h1>Merchendice</h1>
-    <p>A merch studio for creators.</p>
   </header>
-  <nav aria-label="Merchendice links">
-    <ul>
-      <li><a class="card primary" href="https://merchendice.com/enquiry/"><span><strong>Start a merch project</strong><small>Open the enquiry form</small></span></a></li>
-      <li><a class="card" href="https://merchendice.com/examples/"><span><strong>See merch examples</strong></span></a></li>
-      <li><a class="card" href="https://merchendice.com/example-store/"><span><strong>Explore the demo store</strong></span></a></li>
-      <li><a class="card" href="https://merchendice.com/#how-it-works"><span><strong>How it works</strong></span></a></li>
-      <li><a class="card" href="https://merchendice.com/#faq"><span><strong>Frequently asked questions</strong></span></a></li>
-    </ul>
-  </nav>
-  <footer><a href="https://merchendice.com/">merchendice.com</a></footer>
-</main>
+
+  <main>
+    <div class="intro">
+      <h1>Merchendice links</h1>
+      <p>A merch studio for creators and influencers.</p>
+    </div>
+
+    <nav class="links" aria-label="Merchendice links">
+      <ul>
+        <li><a class="link primary" href="https://merchendice.com/enquiry/">Start a merch project</a></li>
+        <li><a class="link" href="https://merchendice.com/examples/">See merch examples</a></li>
+        <li><a class="link" href="https://merchendice.com/example-store/">Explore the demo store</a></li>
+        <li><a class="link" href="https://merchendice.com/#how-it-works">How it works</a></li>
+        <li><a class="link" href="https://merchendice.com/#faq">Frequently asked questions</a></li>
+      </ul>
+    </nav>
+
+    <div class="photos" aria-hidden="true">
+      <img src="https://merchendice.com/images/photo-tote-360.webp" alt="" width="360" height="450">
+      <img src="https://merchendice.com/images/hero-tee.webp" alt="" width="720" height="900">
+    </div>
+  </main>
+</body>
 </html>
