@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Find the Merchendice enquiry form, merch examples, demo store, and FAQs.">
+<meta name="theme-color" content="#f7f3ff">
+<title>Merchendice Links</title>
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #230d30;
+    --paper: #f7f3ff;
+    --yellow: #f7fb64;
+    --purple: #ded0fa;
+    font-family: system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-image: radial-gradient(#58327532 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  main { width: min(100% - 2.5rem, 35rem); margin: auto; padding: clamp(2.5rem, 7vw, 5rem) 0 3rem; }
+  header { margin-bottom: 1.65rem; }
+  .dice { height: 6.1rem; margin: 0 0 1.25rem .65rem; position: relative; width: 9rem; }
+  .die {
+    width: 5rem;
+    aspect-ratio: 1;
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+    border-radius: .9rem;
+    box-shadow: 4px 5px var(--ink);
+    position: absolute;
+    transform: rotate(-13deg);
+    display: grid;
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+    place-items: center;
+    padding: .55rem;
+  }
+  .die.back { left: 3.75rem; top: .8rem; background: var(--purple); transform: rotate(16deg); }
+  .pip { width: .65rem; aspect-ratio: 1; border-radius: 50%; background: var(--ink); }
+  .top { grid-area: 1 / 1; }
+  .middle { grid-area: 2 / 2; }
+  .bottom { grid-area: 3 / 3; }
+  .top-right { grid-area: 1 / 3; }
+  .bottom-left { grid-area: 3 / 1; }
+  h1 { margin: 0; font-size: clamp(2.55rem, 9.6vw, 5rem); line-height: 1; font-weight: 950; letter-spacing: -.075em; }
+  header p { margin: .8rem 0 0; font-size: 1.1rem; line-height: 1.5; font-weight: 550; }
+  ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .85rem; }
+  .card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    min-height: 4.15rem;
+    padding: .75rem 1.05rem;
+    color: inherit;
+    text-decoration: none;
+    background: #fff;
+    border: 2px solid var(--ink);
+    border-radius: .75rem;
+    box-shadow: 4px 4px var(--ink);
+  }
+  .card.primary { background: var(--yellow); }
+  .card:hover { background: var(--purple); }
+  .card strong { display: block; font-weight: 800; font-size: 1.06rem; }
+  .card small { display: block; font-size: .875rem; margin-top: .15rem; }
+  .card::after { content: "+"; font: 700 1.6rem/1 system-ui, sans-serif; }
+  a:focus-visible { outline: 3px solid #7133bb; outline-offset: 5px; }
+  footer { margin-top: 1.9rem; font-size: .875rem; }
+  footer a { color: inherit; font-weight: 700; text-underline-offset: .23em; }
+</style>
+<main>
+  <header>
+    <div class="dice" aria-hidden="true">
+      <div class="die back"><i class="pip top"></i><i class="pip bottom"></i></div>
+      <div class="die"><i class="pip top"></i><i class="pip top-right"></i><i class="pip middle"></i><i class="pip bottom-left"></i><i class="pip bottom"></i></div>
+    </div>
+    <h1>Merchendice</h1>
+    <p>A merch studio for creators.</p>
+  </header>
+  <nav aria-label="Merchendice links">
+    <ul>
+      <li><a class="card primary" href="https://merchendice.com/enquiry/"><span><strong>Start a merch project</strong><small>Open the enquiry form</small></span></a></li>
+      <li><a class="card" href="https://merchendice.com/examples/"><span><strong>See merch examples</strong></span></a></li>
+      <li><a class="card" href="https://merchendice.com/example-store/"><span><strong>Explore the demo store</strong></span></a></li>
+      <li><a class="card" href="https://merchendice.com/#how-it-works"><span><strong>How it works</strong></span></a></li>
+      <li><a class="card" href="https://merchendice.com/#faq"><span><strong>Frequently asked questions</strong></span></a></li>
+    </ul>
+  </nav>
+  <footer><a href="https://merchendice.com/">merchendice.com</a></footer>
+</main>
+</html>
