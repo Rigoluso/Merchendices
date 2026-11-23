@@ -236,6 +236,8 @@ export function createAppServer({
   // TLS ends at the reverse proxy (Nginx Proxy Manager), so HTTPS handling is only on in production
   // with an https PUBLIC_ORIGIN, and never for localhost requests.
   const httpsOrigin = publicOrigin.startsWith('https:');
+  const canonicalHost = new URL(publicOrigin).hostname;
+  const wwwAlias = production && httpsOrigin && !canonicalHost.startsWith('www.') ? `www.${canonicalHost}` : null;
   const useHsts = production && httpsOrigin && env.HSTS !== '0';
   // Redirect only when a trusted proxy explicitly says the client used plain HTTP.
   // Requests without the header (direct health checks) are never redirected, so there is no loop.
@@ -254,13 +256,16 @@ export function createAppServer({
         incoming.resume();
         return sendJson(outgoing, 400, { message: invalidRequest });
       }
-      const local = LOCAL_HOSTS.has(requestHostname(incoming));
-      if (forceHttps && !local && String(incoming.headers['x-forwarded-proto'] || '').split(',')[0].trim().toLowerCase() === 'http') {
+      const hostname = requestHostname(incoming);
+      const local = LOCAL_HOSTS.has(hostname);
+      const redirectWww = hostname === wwwAlias && ['GET', 'HEAD'].includes(incoming.method);
+      const redirectHttp = forceHttps && !local && String(incoming.headers['x-forwarded-proto'] || '').split(',')[0].trim().toLowerCase() === 'http';
+      if (useHsts && !local) outgoing.setHeader('strict-transport-security', HSTS_VALUE);
+      if (redirectWww || redirectHttp) {
         incoming.resume();
         outgoing.writeHead(301, { location: `${publicOrigin}${url.pathname}${url.search}`, 'cache-control': 'no-cache' });
         return outgoing.end();
       }
-      if (useHsts && !local) outgoing.setHeader('strict-transport-security', HSTS_VALUE);
       const legacy = ['GET', 'HEAD'].includes(incoming.method) && legacyExampleRedirect(url.pathname);
       if (legacy) {
         outgoing.writeHead(301, { location: `${legacy}${url.search}`, 'cache-control': 'no-cache', 'x-content-type-options': 'nosniff', ...SECURITY_HEADERS });

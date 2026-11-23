@@ -330,6 +330,16 @@ test('plain HTTP from the trusted proxy redirects to HTTPS once, without a loop'
   assert.equal(localHttp.statusCode, 200);
 });
 
+test('the production www alias redirects to the apex with the path and query intact', async t => {
+  const fixture = await serverFixture(t);
+  const response = await proxyGet(fixture.base, '/examples/?ref=creator', {
+    host: 'www.merchendice.example.test',
+    'x-forwarded-proto': 'https',
+  });
+  assert.equal(response.statusCode, 301);
+  assert.equal(response.headers.location, 'https://merchendice.example.test/examples/?ref=creator');
+});
+
 test('old /examplepage.com links redirect permanently to /example-store/', async t => {
   const fixture = await serverFixture(t);
   const doubleSlash = await fetch(`${fixture.base}//`, { redirect: 'manual' });

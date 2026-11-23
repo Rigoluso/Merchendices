@@ -458,12 +458,12 @@ test('homepage is image-led with self-hosted mockups, one shirt in the hero, and
   assert.doesNotMatch(js, /reveal/);
 });
 
-test('JSON-LD and the visible hero line both say creators and influencers', async () => {
+test('JSON-LD and the main heading both name creators and influencers', async () => {
   const html = await (await worker.fetch(new Request('https://site.example.test/'))).text();
   const json = JSON.parse(html.match(/<script type="application\/ld\+json">([^<]+)<\/script>/)[1])['@graph'].find((node) => node['@type'] === 'Organization');
   assert.match(json.description, /creators and influencers/);
   assert.match(json.audience.audienceType, /Creators and influencers/);
-  assert.match(html, /<h2 class="hero-line">A merch studio for creators and influencers<\/h2>/);
+  assert.match(html, /<h1[^>]*>Custom merch for creators and influencers<\/h1>/);
 });
 
 test('the primary Start a project button sits in the hero under the bullets, and the hero text is top-aligned', async () => {
@@ -749,7 +749,7 @@ test('quick fixes: Example store naming, reply time on the enquiry page, no Oxfo
     if (route !== '/example-store/') assert.equal((html.match(/<a href="\/examples\/"( aria-current="page")?>Example store<\/a>/g) || []).length, 2, route);
   }
   const examples = await page('/examples/');
-  assert.match(examples, /<title>Example store \| Merchendice<\/title>/);
+  assert.match(examples, /<title>Creator Merch Store Demo \| Merchendice<\/title>/);
   assert.match(examples, /<h1 id="directory-title" class="hero-rise">Example store<\/h1>/);
   assert.match(examples, /a collection page, quick view and a bag\./);
   const enquiry = await page('/enquiry/');
